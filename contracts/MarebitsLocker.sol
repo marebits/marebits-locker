@@ -66,72 +66,74 @@ contract MarebitsLocker is ERC165, TokenTypeable, RecoverableEther, RecoverableT
 
 	function __setTokenURI(uint256 tokenId, string calldata tokenUri) external onlyOwner { _lockerToken.__setTokenURI(tokenId, tokenUri); }
 	
-	function _createAccount(uint256 amount, address tokenContract, uint256 tokenId, TokenType tokenType, uint256 unlockTime) private returns (uint256 issuedTokenId) {
-		issuedTokenId = _lockerToken.__getNextTokenId();
-		_lockerAccount.__createAccount(issuedTokenId, amount, tokenContract, tokenId, tokenType, unlockTime);
+	function _createAccount(uint256 amount, address tokenContract, uint256 tokenId, TokenType tokenType, uint256 unlockTime) private returns (uint256 accountId) {
+		accountId = _lockerToken.__getNextTokenId();
+		_lockerAccount.__createAccount(accountId, amount, tokenContract, tokenId, tokenType, unlockTime);
 	}
 
-	function _lockERC1155(IERC1155 token, uint256 tokenId, uint256 amount, uint256 unlockTime) private {
+	function _lockERC1155(IERC1155 token, uint256 tokenId, uint256 amount, uint256 unlockTime) private returns (uint256 accountId) {
 		require(amount > 0, "`amount` must be > 0");
 		require(token.balanceOf(_msgSender(), tokenId) >= amount, "`amount` must be <= total token balance");
 		require(token.isApprovedForAll(_msgSender(), address(this)), "Not approved, you must call `token.setApprovalForAll()`");
-		uint256 issuedTokenId = _createAccount(amount, address(token), tokenId, TokenType.ERC1155, unlockTime);
+		accountId = _createAccount(amount, address(token), tokenId, TokenType.ERC1155, unlockTime);
 		token.safeTransferFrom(_msgSender(), payable(address(_vault)), tokenId, amount, "");
-		_lockerToken.__issueToken(payable(_msgSender()), issuedTokenId, _lockerAccount.getTokenUri(issuedTokenId));
-		emit TokensLocked(issuedTokenId, _msgSender(), amount, address(token), tokenId, TokenType.ERC1155, unlockTime);
+		_lockerToken.__issueToken(payable(_msgSender()), accountId, _lockerAccount.getTokenUri(accountId));
+		emit TokensLocked(accountId, _msgSender(), amount, address(token), tokenId, TokenType.ERC1155, unlockTime);
 	}
 
-	function _lockERC20(IERC20 token, uint256 amount, uint256 unlockTime) private {
+	function _lockERC20(IERC20 token, uint256 amount, uint256 unlockTime) private returns (uint256 accountId) {
 		require(amount > 0, "`amount` must be > 0");
 		require(token.balanceOf(_msgSender()) >= amount, "`amount` must be <= total token balance");
 		require(token.allowance(_msgSender(), address(this)) >= amount, "Not approved, you must call `token.approve()`");
-		uint256 issuedTokenId = _createAccount(amount, address(token), 0, TokenType.ERC20, unlockTime);
+		accountId = _createAccount(amount, address(token), 0, TokenType.ERC20, unlockTime);
 		token.safeTransferFrom(_msgSender(), payable(address(_vault)), amount);
-		_lockerToken.__issueToken(payable(_msgSender()), issuedTokenId, _lockerAccount.getTokenUri(issuedTokenId));
-		emit TokensLocked(issuedTokenId, _msgSender(), amount, address(token), 0, TokenType.ERC20, unlockTime);
+		_lockerToken.__issueToken(payable(_msgSender()), accountId, _lockerAccount.getTokenUri(accountId));
+		emit TokensLocked(accountId, _msgSender(), amount, address(token), 0, TokenType.ERC20, unlockTime);
 	}
 
-	function _lockERC721(IERC721 token, uint256 tokenId, uint256 unlockTime) private {
+	function _lockERC721(IERC721 token, uint256 tokenId, uint256 unlockTime) private returns (uint256 accountId) {
 		require(token.ownerOf(tokenId) == _msgSender(), "`tokenId` not owned by caller");
 		require(token.getApproved(tokenId) == address(this), "Not approved, you must call `token.approve()`");
-		uint256 issuedTokenId = _createAccount(1, address(token), tokenId, TokenType.ERC721, unlockTime);
+		accountId = _createAccount(1, address(token), tokenId, TokenType.ERC721, unlockTime);
 		token.safeTransferFrom(_msgSender(), payable(address(_vault)), tokenId);
-		_lockerToken.__issueToken(payable(_msgSender()), issuedTokenId, _lockerAccount.getTokenUri(issuedTokenId));
-		emit TokensLocked(issuedTokenId, _msgSender(), 1, address(token), tokenId, TokenType.ERC721, unlockTime);
+		_lockerToken.__issueToken(payable(_msgSender()), accountId, _lockerAccount.getTokenUri(accountId));
+		emit TokensLocked(accountId, _msgSender(), 1, address(token), tokenId, TokenType.ERC721, unlockTime);
 	}
 
-	function getAccount(uint256 tokenId) external view returns (uint256, string memory, address, uint256, TokenType, string memory, uint256) { return _lockerAccount.getAccount(tokenId); }
-
-	function extendLock(uint256 tokenId, uint256 unlockTime) external onlyHuman {
-		require(_lockerToken.__exists(tokenId), "`tokenId` does not exist");
-		require(_lockerToken.ownerOf(tokenId) == _msgSender(), "Not the owner of this `tokenId`");
-		require(unlockTime > _lockerAccount.getUnlockTime(tokenId), "New `unlockTime` must be > the existing `unlockTime`");
-		_lockerAccount.__setUnlockTime(tokenId, unlockTime);
-		emit TokensLocked(tokenId, _msgSender(), _lockerAccount.getAmount(tokenId), _lockerAccount.getTokenContract(tokenId), _lockerAccount.getTokenId(tokenId), _lockerAccount.getTokenType(tokenId), unlockTime);
+	function extendLock(uint256 accountId, uint256 unlockTime) external onlyHuman {
+		require(_lockerToken.__exists(accountId), "Token for `accountId` does not exist");
+		require(_lockerToken.ownerOf(accountId) == _msgSender(), "Not the owner of this `accountId`");
+		require(unlockTime > _lockerAccount.getUnlockTime(accountId), "New `unlockTime` must be > the existing `unlockTime`");
+		_lockerAccount.__setUnlockTime(accountId, unlockTime);
+		emit TokensLocked(accountId, _msgSender(), _lockerAccount.getAmount(accountId), _lockerAccount.getTokenContract(accountId), _lockerAccount.getTokenId(accountId), _lockerAccount.getTokenType(accountId), unlockTime);
 	}
 
-	function lockTokens(TokenType tokenType, address tokenContract, uint256 tokenId, uint256 amount, uint256 unlockTime) external nonReentrant onlyHuman isValidTokenType(tokenType) {
+	function getAccount(uint256 accountId) external view returns (uint256, string memory, address, uint256, TokenType, string memory, uint256) { return _lockerAccount.getAccount(accountId); }
+
+	function lockTokens(TokenType tokenType, address tokenContract, uint256 tokenId, uint256 amount, uint256 unlockTime) external nonReentrant onlyHuman isValidTokenType(tokenType) returns (uint256) {
 		require(unlockTime > block.timestamp, "`unlockTime` must be in the future");
 
 		if (tokenType == TokenType.ERC1155) {
-			_lockERC1155(IERC1155(tokenContract), tokenId, amount, unlockTime);
+			return _lockERC1155(IERC1155(tokenContract), tokenId, amount, unlockTime);
 		} else if (tokenType == TokenType.ERC20) {
-			_lockERC20(IERC20(tokenContract), amount, unlockTime);
+			return _lockERC20(IERC20(tokenContract), amount, unlockTime);
 		} else if (tokenType == TokenType.ERC721) {
-			_lockERC721(IERC721(tokenContract), tokenId, unlockTime);
+			return _lockERC721(IERC721(tokenContract), tokenId, unlockTime);
+		} else {
+			return 0;
 		}
 	}
 
-	function redeemToken(uint256 tokenId) external nonReentrant onlyHuman {
-		require(_lockerToken.__exists(tokenId), "`tokenId` does not exist");
-		require(_lockerToken.ownerOf(tokenId) == _msgSender(), "Not the owner of this `tokenId`");
-		require(_lockerToken.getApproved(tokenId) == address(this), "Not approved, you must call `token.approve()`");
-		require(_lockerAccount.isUnlocked(tokenId), "`unlockTime` not expired");
-		require(_lockerAccount.getAmount(tokenId) > 0, "Account has no balance");
-		_lockerAccount.__setAmount(tokenId, 0);
-		_lockerToken.__burn(tokenId);
-		_vault.__transfer(_lockerAccount.getTokenType(tokenId), _lockerAccount.getTokenContract(tokenId), payable(_msgSender()), _lockerAccount.getTokenId(tokenId), _lockerAccount.getAmount(tokenId));
-		emit TokensRedeemed(tokenId, _msgSender(), _lockerAccount.getAmount(tokenId), _lockerAccount.getTokenContract(tokenId), _lockerAccount.getTokenId(tokenId), _lockerAccount.getTokenType(tokenId));
+	function redeemToken(uint256 accountId) external nonReentrant onlyHuman {
+		require(_lockerToken.__exists(accountId), "Token for `accountId` does not exist");
+		require(_lockerToken.ownerOf(accountId) == _msgSender(), "Not the owner of this `accountId`");
+		require(_lockerToken.getApproved(accountId) == address(this), "Not approved, you must call `token.approve()`");
+		require(_lockerAccount.isUnlocked(accountId), "`unlockTime` not expired");
+		require(_lockerAccount.getAmount(accountId) > 0, "Account has no balance");
+		_lockerAccount.__setAmount(accountId, 0);
+		_lockerToken.__burn(accountId);
+		_vault.__transfer(_lockerAccount.getTokenType(accountId), _lockerAccount.getTokenContract(accountId), payable(_msgSender()), _lockerAccount.getTokenId(accountId), _lockerAccount.getAmount(accountId));
+		emit TokensRedeemed(accountId, _msgSender(), _lockerAccount.getAmount(accountId), _lockerAccount.getTokenContract(accountId), _lockerAccount.getTokenId(accountId), _lockerAccount.getTokenType(accountId));
 	}
 
 	/**
