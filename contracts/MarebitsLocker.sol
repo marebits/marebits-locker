@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "./interfaces/IMarebitsLocker.sol";
+import "./interfaces/IMarebitsLockerAccount.sol";
 import "./KnowsBestPony.sol";
 import "./MarebitsLockerAccount.sol";
 import "./MarebitsLockerToken.sol";
@@ -108,7 +109,7 @@ contract MarebitsLocker is ERC165, TokenTypeable, RecoverableEther, RecoverableT
 		emit TokensLocked(accountId, _msgSender(), _lockerAccount.getAmount(accountId), _lockerAccount.getTokenContract(accountId), _lockerAccount.getTokenId(accountId), _lockerAccount.getTokenType(accountId), unlockTime);
 	}
 
-	function getAccount(uint256 accountId) external view returns (uint256, string memory, address, uint256, TokenType, string memory, uint256) { return _lockerAccount.getAccount(accountId); }
+	function getAccount(uint256 accountId) external view returns (IMarebitsLockerAccount.Account memory) { return _lockerAccount.getAccount(accountId); }
 
 	function lockTokens(TokenType tokenType, address tokenContract, uint256 tokenId, uint256 amount, uint256 unlockTime) external nonReentrant onlyHuman isValidTokenType(tokenType) returns (uint256) {
 		require(unlockTime > block.timestamp, "`unlockTime` must be in the future");

@@ -15,7 +15,7 @@ interface IMarebitsLockerAccount is IERC165, ITokenTypeable {
 		uint256 unlockTime;
 	}
 
-	function getAccount(uint256 accountId) external view returns (uint256, string memory, address, uint256, TokenType, string memory, uint256);
+	function getAccount(uint256 accountId) external view returns (Account memory);
 	function getAmount(uint256 accountId) external view returns (uint256);
 	function getMetadata(uint256 accountId) external view returns (string memory);
 	function getTokenContract(uint256 accountId) external view returns (address);

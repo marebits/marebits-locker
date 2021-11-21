@@ -36,9 +36,7 @@ contract MarebitsLockerAccount is ERC165, TokenTypeable, RecoverableEther, Recov
 
 	function __setUnlockTime(uint256 accountId, uint256 unlockTime) external onlyOwner { _accounts[accountId].unlockTime = unlockTime; }
 
-	function getAccount(uint256 accountId) external view returns (uint256, string memory, address, uint256, TokenType, string memory, uint256) {
-		return (_accounts[accountId].amount, _accounts[accountId].metadata, _accounts[accountId].tokenContract, _accounts[accountId].tokenId, _accounts[accountId].tokenType, _accounts[accountId].tokenUri, _accounts[accountId].unlockTime);
-	}
+	function getAccount(uint256 accountId) external view returns (Account memory) { return _accounts[accountId]; }
 
 	function getAmount(uint256 accountId) external view returns (uint256) { return _accounts[accountId].amount; }
 
