@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: LicenseRef-DSPL
 pragma solidity ^0.8.0;
 
+import "./interfaces/IMarebitsLockerToken.sol";
 import "./KnowsBestPony.sol";
 import "./RecoverableEther.sol";
 import "./RecoverableTokens.sol";
@@ -10,7 +11,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract MarebitsLockerToken is RecoverableEther, RecoverableTokens, ERC721URIStorage, KnowsBestPony {
+contract MarebitsLockerToken is RecoverableEther, RecoverableTokens, ERC721URIStorage, KnowsBestPony, IMarebitsLockerToken {
 	using Counters for Counters.Counter;
 
 	string private __baseURI;
@@ -53,13 +54,13 @@ contract MarebitsLockerToken is RecoverableEther, RecoverableTokens, ERC721URISt
 	* @param interfaceId to check
 	* @return true if the interfaceId is supported and false if it is not
 	*/
-	function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721) returns (bool) {
-		return interfaceId == type(ERC721Burnable).interfaceId || 
-			interfaceId == type(KnowsBestPony).interfaceId || 
+	function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC721) returns (bool) {
+		return interfaceId == type(KnowsBestPony).interfaceId || 
 			interfaceId == type(Ownable).interfaceId || 
 			interfaceId == type(RecoverableEther).interfaceId ||
 			interfaceId == type(RecoverableTokens).interfaceId || 
 			interfaceId == type(ERC721URIStorage).interfaceId || 
+			interfaceId == type(IMarebitsLockerToken).interfaceId || 
 			ERC721.supportsInterface(interfaceId);
 	}
 }

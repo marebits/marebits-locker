@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: LicenseRef-DSPL
 pragma solidity ^0.8.0;
 
+import "./interfaces/IMarebitsLocker.sol";
 import "./KnowsBestPony.sol";
 import "./MarebitsLockerAccount.sol";
 import "./MarebitsLockerToken.sol";
@@ -21,7 +22,7 @@ import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 
-contract MarebitsLocker is ERC165, RecoverableEther, RecoverableTokens, KnowsBestPony, ReentrancyGuard, TokenTypeable {
+contract MarebitsLocker is ERC165, TokenTypeable, RecoverableEther, RecoverableTokens, KnowsBestPony, ReentrancyGuard, IMarebitsLocker {
 	using Address for address;
 	using SafeERC20 for IERC20;
 
@@ -33,9 +34,6 @@ contract MarebitsLocker is ERC165, RecoverableEther, RecoverableTokens, KnowsBes
 
 	// vault where all tokens (ERC20 and ERC721) are held in escrow while locked
 	MarebitsVault private _vault;
-
-	event TokensLocked(uint256 indexed lockerTokenId, address indexed owner, uint256 amount, address tokenContract, uint256 tokenId, TokenType tokenType, uint256 unlockTime);
-	event TokensRedeemed(uint256 indexed lockerTokenId, address indexed owner, uint256 amount, address tokenContract, uint256 tokenId, TokenType tokenType);
 
 	/**
 	 * @dev Only humans can interact
@@ -56,6 +54,12 @@ contract MarebitsLocker is ERC165, RecoverableEther, RecoverableTokens, KnowsBes
 		_lockerToken.__recoverEther();
 		_vault.__recoverEther();
 		super.__recoverEther();
+	}
+
+	function __recoverTokens(TokenType tokenType, address tokenContract, uint256 tokenId) public override(RecoverableTokens) onlyOwner {
+		_lockerAccount.__recoverTokens(tokenType, tokenContract, tokenId);
+		_lockerToken.__recoverTokens(tokenType, tokenContract, tokenId);
+		super.__recoverTokens(tokenType, tokenContract, tokenId);
 	}
 
 	function __setBaseURI(string calldata baseURI) external onlyOwner { _lockerToken.__setBaseURI(baseURI); }
@@ -126,7 +130,7 @@ contract MarebitsLocker is ERC165, RecoverableEther, RecoverableTokens, KnowsBes
 		require(_lockerAccount.getAmount(tokenId) > 0, "Account has no balance");
 		_lockerAccount.__setAmount(tokenId, 0);
 		_lockerToken.__burn(tokenId);
-		_vault.transfer(_lockerAccount.getTokenType(tokenId), _lockerAccount.getTokenContract(tokenId), payable(_msgSender()), _lockerAccount.getTokenId(tokenId), _lockerAccount.getAmount(tokenId));
+		_vault.__transfer(_lockerAccount.getTokenType(tokenId), _lockerAccount.getTokenContract(tokenId), payable(_msgSender()), _lockerAccount.getTokenId(tokenId), _lockerAccount.getAmount(tokenId));
 		emit TokensRedeemed(tokenId, _msgSender(), _lockerAccount.getAmount(tokenId), _lockerAccount.getTokenContract(tokenId), _lockerAccount.getTokenId(tokenId), _lockerAccount.getTokenType(tokenId));
 	}
 
@@ -135,11 +139,12 @@ contract MarebitsLocker is ERC165, RecoverableEther, RecoverableTokens, KnowsBes
 	* @param interfaceId to check
 	* @return true if the interfaceId is supported and false if it is not
 	*/
-	function supportsInterface(bytes4 interfaceId) public view virtual override(ERC165) returns (bool) {
+	function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC165) returns (bool) {
 		return interfaceId == type(KnowsBestPony).interfaceId || 
 			interfaceId == type(Ownable).interfaceId || 
 			interfaceId == type(RecoverableEther).interfaceId ||
 			interfaceId == type(RecoverableTokens).interfaceId || 
+			interfaceId == type(IMarebitsLocker).interfaceId || 
 			super.supportsInterface(interfaceId);
 	}
 }

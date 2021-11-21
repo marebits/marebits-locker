@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: LicenseRef-DSPL
 pragma solidity ^0.8.0;
 
+import "./interfaces/IMarebitsLockerAccount.sol";
 import "./KnowsBestPony.sol";
 import "./RecoverableEther.sol";
 import "./RecoverableTokens.sol";
@@ -10,22 +11,12 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
-contract MarebitsLockerAccount is ERC165, RecoverableEther, RecoverableTokens, KnowsBestPony, TokenTypeable {
+contract MarebitsLockerAccount is ERC165, TokenTypeable, RecoverableEther, RecoverableTokens, KnowsBestPony, IMarebitsLockerAccount {
 	using Strings for uint256;
-
-	struct Account {
-		uint256 amount;
-		string metadata;
-		address tokenContract;
-		uint256 tokenId;
-		TokenType tokenType;
-		string tokenUri;
-		uint256 unlockTime;
-	}
 
 	mapping(uint256 => Account) private _accounts;
 
-	function __createAccount(uint256 accountId, uint256 amount, address tokenContract, uint256 tokenId, TokenType tokenType, uint256 unlockTime) public onlyOwner isValidTokenType(tokenType) {
+	function __createAccount(uint256 accountId, uint256 amount, address tokenContract, uint256 tokenId, TokenType tokenType, uint256 unlockTime) public onlyOwner {
 		require(amount > 0, "`amount` must be greater than 0");
 		require(tokenType != TokenType.ERC721 || amount == 1, "`amount` must be 1 for ERC721 tokens");
 		require(tokenType == TokenType.ERC20 || tokenId > 0, "`tokenId` must be specified for ERC721 or ERC1155 tokens");
@@ -70,11 +61,12 @@ contract MarebitsLockerAccount is ERC165, RecoverableEther, RecoverableTokens, K
 	* @param interfaceId to check
 	* @return true if the interfaceId is supported and false if it is not
 	*/
-	function supportsInterface(bytes4 interfaceId) public view virtual override(ERC165) returns (bool) {
+	function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC165) returns (bool) {
 		return interfaceId == type(KnowsBestPony).interfaceId || 
 			interfaceId == type(Ownable).interfaceId || 
 			interfaceId == type(RecoverableEther).interfaceId ||
 			interfaceId == type(RecoverableTokens).interfaceId || 
+			interfaceId == type(IMarebitsLockerAccount).interfaceId || 
 			super.supportsInterface(interfaceId);
 	}
 }

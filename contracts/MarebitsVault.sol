@@ -17,6 +17,16 @@ import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 contract MarebitsVault is ERC1155Holder, ERC721Holder, KnowsBestPony, RecoverableEther, TokenTypeable {
 	using SafeERC20 for IERC20;
 
+	function __transfer(TokenType tokenType, address tokenContract, address payable to, uint256 tokenId, uint256 amount) external onlyOwner {
+		if (tokenType == TokenType.ERC1155) {
+			_transferERC1155(IERC1155(tokenContract), to, tokenId, amount);
+		} else if (tokenType == TokenType.ERC20) {
+			_transferERC20(IERC20(tokenContract), to, amount);
+		} else if (tokenType == TokenType.ERC721) {
+			_transferERC721(IERC721(tokenContract), to, tokenId);
+		}
+	}
+
 	/**
 	 * @dev Transfer ERC1155 tokens to destination, used to move tokens from the vault to the owner on withdraw
 	 * @param token to transfer
@@ -52,15 +62,5 @@ contract MarebitsVault is ERC1155Holder, ERC721Holder, KnowsBestPony, Recoverabl
 			interfaceId == type(Ownable).interfaceId || 
 			interfaceId == type(RecoverableEther).interfaceId || 
 			super.supportsInterface(interfaceId);
-	}
-
-	function transfer(TokenType tokenType, address tokenContract, address payable to, uint256 tokenId, uint256 amount) external onlyOwner isValidTokenType(tokenType) {
-		if (tokenType == TokenType.ERC1155) {
-			_transferERC1155(IERC1155(tokenContract), to, tokenId, amount);
-		} else if (tokenType == TokenType.ERC20) {
-			_transferERC20(IERC20(tokenContract), to, amount);
-		} else if (tokenType == TokenType.ERC721) {
-			_transferERC721(IERC721(tokenContract), to, tokenId);
-		}
 	}
 }

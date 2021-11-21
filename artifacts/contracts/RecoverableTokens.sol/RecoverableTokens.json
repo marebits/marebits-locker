@@ -25,8 +25,13 @@
     {
       "inputs": [
         {
-          "internalType": "contract IERC1155",
-          "name": "token",
+          "internalType": "enum ITokenTypeable.TokenType",
+          "name": "tokenType",
+          "type": "uint8"
+        },
+        {
+          "internalType": "address",
+          "name": "tokenContract",
           "type": "address"
         },
         {
@@ -35,38 +40,7 @@
           "type": "uint256"
         }
       ],
-      "name": "__recoverERC1155",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "contract IERC20",
-          "name": "token",
-          "type": "address"
-        }
-      ],
-      "name": "__recoverERC20",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "contract IERC721",
-          "name": "token",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        }
-      ],
-      "name": "__recoverERC721",
+      "name": "__recoverTokens",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
