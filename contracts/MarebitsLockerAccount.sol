@@ -23,18 +23,23 @@ contract MarebitsLockerAccount is ERC165, TokenTypeable, RecoverableEther, Recov
 		require(unlockTime > block.timestamp, "`unlockTime` must be in the future");
 		Account storage account = _accounts[accountId];
 		(account.amount, account.tokenContract, account.tokenId, account.tokenType, account.unlockTime) = (amount, tokenContract, tokenId, tokenType, unlockTime);
-		string memory tokenIdProperty = "";
-
-		if (account.tokenId > 0) {
-			tokenIdProperty = string(abi.encodePacked('"tokenId":"', account.tokenId.toString(), '",'));
-		}
-		account.metadata = string(abi.encodePacked('{"description":"This token entitles the holder to withdraw their locked token(s) after their lock period expires from the Mare Bits Locker.","external_url":"https://mare.biz/","image":"https://mare.biz/marebits/icon-960.png","name":"\\uD83D\\uDC0E\\u200D\\u2640\\uFE0F\\uD83D\\uDD12\\uD83E\\uDE99","properties": {"amount":"', account.amount.toString(), '","tokenContract":"', uint256(uint160(account.tokenContract)).toString(), '",', tokenIdProperty, '"unlockTime":"', account.unlockTime.toString(), '"}}'));
-		account.tokenUri = string(verifyIPFS.generateHash(account.metadata));
+		_generateMetadata(account);
 	}
 
-	function __setAmount(uint256 accountId, uint256 amount) external onlyOwner { _accounts[accountId].amount = amount; }
+	function __setAmount(uint256 accountId, uint256 amount) external onlyOwner {
+		_accounts[accountId].amount = amount;
+		_generateMetadata(_accounts[accountId]);
+	}
 
-	function __setUnlockTime(uint256 accountId, uint256 unlockTime) external onlyOwner { _accounts[accountId].unlockTime = unlockTime; }
+	function __setUnlockTime(uint256 accountId, uint256 unlockTime) external onlyOwner {
+		_accounts[accountId].unlockTime = unlockTime;
+		_generateMetadata(_accounts[accountId]);
+	}
+
+	function _generateMetadata(Account storage account) private {
+		account.metadata = string(abi.encodePacked('{"description":"This token entitles the holder to withdraw their locked token(s) after their lock period expires from the Mare Bits Locker.","external_url":"https://mare.biz/","image":"https://mare.biz/marebits/icon-960.png","name":"\\uD83D\\uDC0E\\u200D\\u2640\\uFE0F\\uD83D\\uDD12\\uD83E\\uDE99","properties": {"amount":"', account.amount.toString(), '","tokenContract":"', uint256(uint160(account.tokenContract)).toString(), '","tokenType":"', (account.tokenType == TokenType.ERC1155) ? "ERC1155" : (account.tokenType == TokenType.ERC20) ? "ERC20" : (account.tokenType == TokenType.ERC721) ? "ERC721" : "UNKNOWN", '",', (account.tokenId > 0) ? string(abi.encodePacked('"tokenId":"', account.tokenId.toString(), '",')) : "", '"unlockTime":"', account.unlockTime.toString(), '"}}'));
+		account.tokenUri = string(verifyIPFS.generateHash(account.metadata));
+	}
 
 	function getAccount(uint256 accountId) external view returns (Account memory) { return _accounts[accountId]; }
 
