@@ -4,4 +4,6 @@ Mare Bits Locker is a non-fungible token that allows users to lock their other e
 
 This was originally created to facilitate the locking of liquidity tokens as part of the launch of Mare Bits ($MARE).  For more information on that project, see [https://mare.biz/](https://mare.biz/).  Since I figured it could be of use to some others, I've released the source code here.
 
-More documentation to come...
+This should work for all tokens that implement either the ERC20, ERC721, or ERC1155 interfaces, including ERC777.
+
+I will provide more documentation on how this contract can be used in production here once it is deployed.
