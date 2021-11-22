@@ -16,6 +16,11 @@ contract MarebitsLockerAccount is ERC165, TokenTypeable, RecoverableEther, Recov
 
 	mapping(uint256 => Account) private _accounts;
 
+	modifier accountExists(uint256 accountId) {
+		require(_accounts[accountId].tokenType != TokenType.UNDEFINED, "`accountId` does not exist");
+		_;
+	}
+
 	function __createAccount(uint256 accountId, uint256 amount, address tokenContract, uint256 tokenId, TokenType tokenType, uint256 unlockTime) public onlyOwner {
 		require(amount > 0, "`amount` must be greater than 0");
 		require(tokenType != TokenType.ERC721 || amount == 1, "`amount` must be 1 for ERC721 tokens");
@@ -26,12 +31,12 @@ contract MarebitsLockerAccount is ERC165, TokenTypeable, RecoverableEther, Recov
 		_generateMetadata(account);
 	}
 
-	function __setAmount(uint256 accountId, uint256 amount) external onlyOwner {
+	function __setAmount(uint256 accountId, uint256 amount) external onlyOwner accountExists(accountId) {
 		_accounts[accountId].amount = amount;
 		_generateMetadata(_accounts[accountId]);
 	}
 
-	function __setUnlockTime(uint256 accountId, uint256 unlockTime) external onlyOwner {
+	function __setUnlockTime(uint256 accountId, uint256 unlockTime) external onlyOwner accountExists(accountId) {
 		_accounts[accountId].unlockTime = unlockTime;
 		_generateMetadata(_accounts[accountId]);
 	}
@@ -41,23 +46,25 @@ contract MarebitsLockerAccount is ERC165, TokenTypeable, RecoverableEther, Recov
 		account.tokenUri = string(verifyIPFS.generateHash(account.metadata));
 	}
 
-	function getAccount(uint256 accountId) external view returns (Account memory) { return _accounts[accountId]; }
+	function getAccount(uint256 accountId) external view accountExists(accountId) returns (Account memory) { return _accounts[accountId]; }
 
-	function getAmount(uint256 accountId) external view returns (uint256) { return _accounts[accountId].amount; }
+	function getAmount(uint256 accountId) external view accountExists(accountId) returns (uint256) { return _accounts[accountId].amount; }
 
-	function getMetadata(uint256 accountId) external view returns (string memory) { return _accounts[accountId].metadata; }
+	function getMetadata(uint256 accountId) external view accountExists(accountId) returns (string memory) { return _accounts[accountId].metadata; }
 
-	function getTokenContract(uint256 accountId) external view returns (address) { return _accounts[accountId].tokenContract; }
+	function getTokenContract(uint256 accountId) external view accountExists(accountId) returns (address) { return _accounts[accountId].tokenContract; }
 
-	function getTokenType(uint256 accountId) external view returns (TokenType) { return _accounts[accountId].tokenType; }
+	function getTokenType(uint256 accountId) external view accountExists(accountId) returns (TokenType) { return _accounts[accountId].tokenType; }
 
-	function getTokenId(uint256 accountId) external view returns (uint256) { return _accounts[accountId].tokenId; }
+	function getTokenId(uint256 accountId) external view accountExists(accountId) returns (uint256) { return _accounts[accountId].tokenId; }
 
-	function getTokenUri(uint256 accountId) external view returns (string memory) { return _accounts[accountId].tokenUri; }
+	function getTokenUri(uint256 accountId) external view accountExists(accountId) returns (string memory) { return _accounts[accountId].tokenUri; }
 
-	function getUnlockTime(uint256 accountId) external view returns (uint256) { return _accounts[accountId].unlockTime; }
+	function getUnlockTime(uint256 accountId) external view accountExists(accountId) returns (uint256) { return _accounts[accountId].unlockTime; }
 
-	function isUnlocked(uint256 accountId) external view returns (bool) { return _accounts[accountId].unlockTime <= block.timestamp; }
+	function hasAccount(uint256 accountId) external view returns (bool) { return _accounts[accountId].tokenType != TokenType.UNDEFINED; }
+
+	function isUnlocked(uint256 accountId) external view accountExists(accountId) returns (bool) { return _accounts[accountId].unlockTime <= block.timestamp; }
 
 	/**
 	* @dev Implementation of the {IERC165} interface.

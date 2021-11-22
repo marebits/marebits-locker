@@ -3,4 +3,5 @@ artifacts/build-info/
 artifacts/contracts/verifyIPFS-master/
 cache/
 contracts/verifyIPFS-master/
+deployments/localhost/
 node_modules/

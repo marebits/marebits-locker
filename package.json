@@ -1,17 +1,27 @@
 {
-  "name": "marebits-locker",
-  "version": "1.0.0",
-  "description": "A way to lock-up your ERC20, ERC721, or ERC1155 tokens.  Issues an ERC721 token that can be used to unlock your tokens after the unlock date has passed.",
-  "main": "scripts/index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Twifag",
-  "license": "SEE LICENSE IN https://donutsteel.pl",
-  "devDependencies": {
-    "@nomiclabs/hardhat-ethers": "^2.0.2",
-    "@openzeppelin/contracts": "^4.3.3",
-    "ethers": "^5.5.1",
-    "hardhat": "^2.6.8"
-  }
+	"name": "marebits-locker",
+	"version": "1.0.0",
+	"description": "A way to lock-up your ERC20, ERC721, or ERC1155 tokens.  Issues an ERC721 token that can be used to unlock your tokens after the unlock date has passed.",
+	"main": "",
+	"scripts": {
+		"compile": "npx hardhat compile", 
+		"console": "npx hardhat console --network localhost",
+		"github": "git commit -a && git push origin master",  
+		"node": "npx hardhat node"
+	},
+	"author": "Twifag",
+	"license": "SEE LICENSE IN https://donutsteel.pl",
+	"devDependencies": {
+		"@nomiclabs/hardhat-ethers": "^2.0.2",
+		"@openzeppelin/contracts": "^4.3.3",
+		"@types/chai": "^4.2.22",
+		"@types/mocha": "^9.0.0",
+		"@types/node": "^16.11.9",
+		"chai": "^4.3.4",
+		"ethers": "^5.5.1",
+		"hardhat": "^2.6.8",
+		"hardhat-deploy": "^0.9.10",
+		"ts-node": "^10.4.0",
+		"typescript": "^4.5.2"
+	}
 }
