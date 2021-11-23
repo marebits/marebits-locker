@@ -14,9 +14,22 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 
+/**
+ * @title The Mare Bits Vault
+ * @author Twifag
+ */
 contract MarebitsVault is ERC1155Holder, ERC721Holder, KnowsBestPony, RecoverableEther, TokenTypeable {
 	using SafeERC20 for IERC20;
 
+	/**
+	 * @notice Transfers tokens out of this contract and to the original owner
+	 * @dev Only callable by the {Ownable.owner} of this contract
+	 * @param tokenType of token to be transferred; see {ITokenTypeable.TokenType}
+	 * @param tokenContract for the token to be transferred
+	 * @param to wallet address
+	 * @param tokenId of the token to be transferred; should always be 0 for locked ERC20 tokens
+	 * @param amount of tokens to be transferred
+	 */
 	function __transfer(TokenType tokenType, address tokenContract, address payable to, uint256 tokenId, uint256 amount) external onlyOwner {
 		if (tokenType == TokenType.ERC1155) {
 			_transferERC1155(IERC1155(tokenContract), to, tokenId, amount);
@@ -28,33 +41,33 @@ contract MarebitsVault is ERC1155Holder, ERC721Holder, KnowsBestPony, Recoverabl
 	}
 
 	/**
-	 * @dev Transfer ERC1155 tokens to destination, used to move tokens from the vault to the owner on withdraw
-	 * @param token to transfer
+	 * @dev Transfers ERC1155 tokens out of this contract and to the original owner
+	 * @param token to be transferred
 	 * @param to wallet address
-	 * @param amount of ERC1155 tokens to transfer
+	 * @param tokenId of the token to be transferred
+	 * @param amount of tokens to be transferred
 	 */
 	function _transferERC1155(IERC1155 token, address payable to, uint256 tokenId, uint256 amount) private { token.safeTransferFrom(address(this), to, tokenId, amount, ""); }
 
 	/**
-	 * @dev Transfer ERC20 tokens to destination, used to move tokens from the vault to the owner on withdraw
-	 * @param token to transfer
+	 * @dev Transfers ERC20 tokens out of this contract and to the original owner
+	 * @param token to be transferred
 	 * @param to wallet address
-	 * @param amount of ERC20 tokens to transfer
+	 * @param amount of tokens to be transferred
 	 */
 	function _transferERC20(IERC20 token, address payable to, uint256 amount) private { token.safeTransfer(to, amount); }
 
 	/**
-	 * @dev Transfer ERC721 token to destination, used to move token from the vault to the owner on withdraw
-	 * @param token to transfer
+	 * @dev Transfers ERC721 tokens out of this contract and to the original owner
+	 * @param token to be transferred
 	 * @param to wallet address
-	 * @param tokenId of the ERC721 token to transfer
+	 * @param tokenId of the token to be transferred
 	 */
 	function _transferERC721(IERC721 token, address payable to, uint256 tokenId) private { token.safeTransferFrom(address(this), to, tokenId); }
 
 	/**
 	* @dev Implementation of the {IERC165} interface.
-	* @param interfaceId to check
-	* @return true if the interfaceId is supported and false if it is not
+	* @inheritdoc ERC165
 	*/
 	function supportsInterface(bytes4 interfaceId) public view virtual override(ERC1155Receiver) returns (bool) {
 		return interfaceId == type(IERC721Receiver).interfaceId || 

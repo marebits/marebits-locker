@@ -1,13 +1,14 @@
 {
 	"name": "marebits-locker",
 	"version": "1.0.0",
-	"description": "A way to lock-up your ERC20, ERC721, or ERC1155 tokens.  Issues an ERC721 token that can be used to unlock your tokens after the unlock date has passed.",
+	"description": "A way to lock-up your ERC20, ERC721, or ERC1155 tokens and keep them safe from that waifu thief Brad.  Issues an ERC721 token that can be used to unlock your tokens after the unlock date has passed.",
 	"main": "",
 	"scripts": {
-		"compile": "npx hardhat compile", 
+		"compile": "npx hardhat compile",
 		"console": "npx hardhat console --network localhost",
-		"github": "git commit -a && git push origin master",  
-		"node": "npx hardhat node"
+		"deploy": "npx hardhat deploy --export abi/MarebitsLocker.json --network localhost",
+		"github": "git commit -a && git push origin master",
+		"node": "npx hardhat node --no-deploy --network hardhat"
 	},
 	"author": "Twifag",
 	"license": "SEE LICENSE IN https://donutsteel.pl",

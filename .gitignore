@@ -1,7 +1,6 @@
-artifacts/@openzeppelin/
-artifacts/build-info/
-artifacts/contracts/verifyIPFS-master/
+artifacts/
 cache/
 contracts/verifyIPFS-master/
 deployments/localhost/
 node_modules/
+secrets.json
