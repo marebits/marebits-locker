@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: LicenseRef-DSPL
 pragma solidity ^0.8.0;
 
+import "./interfaces/IMarebitsVault.sol";
 import "./KnowsBestPony.sol";
 import "./RecoverableEther.sol";
 import "./TokenTypeable.sol";
@@ -13,23 +14,16 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
+import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 
 /**
- * @title The Mare Bits Vault
+ * @title The implementation for the Mare Bits Vault
  * @author Twifag
  */
-contract MarebitsVault is ERC1155Holder, ERC721Holder, KnowsBestPony, RecoverableEther, TokenTypeable {
+contract MarebitsVault is ERC1155Holder, ERC721Holder, KnowsBestPony, RecoverableEther, IMarebitsVault {
 	using SafeERC20 for IERC20;
 
-	/**
-	 * @notice Transfers tokens out of this contract and to the original owner
-	 * @dev Only callable by the {Ownable.owner} of this contract
-	 * @param tokenType of token to be transferred; see {ITokenTypeable.TokenType}
-	 * @param tokenContract for the token to be transferred
-	 * @param to wallet address
-	 * @param tokenId of the token to be transferred; should always be 0 for locked ERC20 tokens
-	 * @param amount of tokens to be transferred
-	 */
+	/// @inheritdoc IMarebitsVault
 	function __transfer(TokenType tokenType, address tokenContract, address payable to, uint256 tokenId, uint256 amount) external onlyOwner {
 		if (tokenType == TokenType.ERC1155) {
 			_transferERC1155(IERC1155(tokenContract), to, tokenId, amount);
@@ -69,7 +63,7 @@ contract MarebitsVault is ERC1155Holder, ERC721Holder, KnowsBestPony, Recoverabl
 	* @dev Implementation of the {IERC165} interface.
 	* @inheritdoc ERC165
 	*/
-	function supportsInterface(bytes4 interfaceId) public view virtual override(ERC1155Receiver) returns (bool) {
+	function supportsInterface(bytes4 interfaceId) public view virtual override(ERC1155Receiver, IERC165) returns (bool) {
 		return interfaceId == type(IERC721Receiver).interfaceId || 
 			interfaceId == type(KnowsBestPony).interfaceId || 
 			interfaceId == type(Ownable).interfaceId || 

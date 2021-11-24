@@ -13,7 +13,7 @@ const deployMarebitsLocker: DeployFunction = async function({ deployments, getCh
 	// tx.from = (await frame.request({ method: "eth_requestAccounts" }))[0];
 	// await frame.request({ method: "eth_sendTransaction", params: [tx] });
 	await deployments.deploy("MarebitsLocker", {
-		args: ["Mare Bits Locker Token", "\uD83D\uDC0E\u200D\u2640\uFE0F\uD83D\uDD12\uD83E\uDE99", "https://locker.mare.biz/account/"], 
+		args: ["Mare Bits Locker Token", "\uD83D\uDC0E\u200D\u2640\uFE0F\uD83D\uDD12\uD83E\uDE99", "ipfs://ipfs/"], 
 		from: (await getNamedAccounts()).deployer, 
 		log: true
 	});

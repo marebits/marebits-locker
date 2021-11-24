@@ -8,14 +8,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
  * @author Twifag
  */
 abstract contract RecoverableEther is Ownable {
-	/** @dev Redirect sent ether, no ether should ever be sent to this contract */
-	modifier redirectEther() {
-		if (msg.value > 0) {
-			payable(owner()).transfer(msg.value);
-		}
-		_;
-	}
-	
 	/**
 	 * @notice Recovers ether accidentally sent to this contract
 	 * @dev Only callable by the {Ownable.owner} of this contract

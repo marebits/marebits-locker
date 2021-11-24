@@ -1181,15 +1181,9 @@
               "internalType": "enum ITokenTypeable.TokenType",
               "name": "tokenType",
               "type": "uint8"
-            },
-            {
-              "indexed": false,
-              "internalType": "uint256",
-              "name": "unlockTime",
-              "type": "uint256"
             }
           ],
-          "name": "TokensLocked",
+          "name": "TokenRedeemed",
           "type": "event"
         },
         {
@@ -1230,9 +1224,15 @@
               "internalType": "enum ITokenTypeable.TokenType",
               "name": "tokenType",
               "type": "uint8"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint64",
+              "name": "unlockTime",
+              "type": "uint64"
             }
           ],
-          "name": "TokensRedeemed",
+          "name": "TokensLocked",
           "type": "event"
         },
         {
@@ -1279,39 +1279,19 @@
           "type": "function"
         },
         {
-          "inputs": [],
-          "name": "_lockerAccount",
-          "outputs": [
+          "inputs": [
             {
-              "internalType": "contract MarebitsLockerAccount",
-              "name": "",
-              "type": "address"
+              "internalType": "uint256",
+              "name": "accountId",
+              "type": "uint256"
             }
           ],
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "inputs": [],
-          "name": "_lockerToken",
+          "name": "balanceOf",
           "outputs": [
             {
-              "internalType": "contract MarebitsLockerToken",
+              "internalType": "uint256",
               "name": "",
-              "type": "address"
-            }
-          ],
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "inputs": [],
-          "name": "_vault",
-          "outputs": [
-            {
-              "internalType": "contract MarebitsVault",
-              "name": "",
-              "type": "address"
+              "type": "uint256"
             }
           ],
           "stateMutability": "view",
@@ -1338,9 +1318,9 @@
               "type": "uint256"
             },
             {
-              "internalType": "uint256",
+              "internalType": "uint64",
               "name": "unlockTime",
-              "type": "uint256"
+              "type": "uint64"
             }
           ],
           "name": "extendLock",
@@ -1381,9 +1361,9 @@
                   "type": "uint8"
                 },
                 {
-                  "internalType": "uint256",
+                  "internalType": "uint64",
                   "name": "unlockTime",
-                  "type": "uint256"
+                  "type": "uint64"
                 }
               ],
               "internalType": "struct IMarebitsLockerAccount.Account",
@@ -1417,9 +1397,9 @@
               "type": "uint256"
             },
             {
-              "internalType": "uint256",
+              "internalType": "uint64",
               "name": "unlockTime",
-              "type": "uint256"
+              "type": "uint64"
             }
           ],
           "name": "lockTokens",
@@ -1436,6 +1416,25 @@
         {
           "inputs": [],
           "name": "owner",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "accountId",
+              "type": "uint256"
+            }
+          ],
+          "name": "ownerOf",
           "outputs": [
             {
               "internalType": "address",
