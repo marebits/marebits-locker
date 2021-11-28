@@ -1100,16 +1100,8 @@
         }
       ]
     },
-    "MarebitsLockerTokenMetadataSVGBuilder": {
-      "address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
-      "abi": []
-    },
-    "MarebitsLockerTokenMetadataBuilder": {
-      "address": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
-      "abi": []
-    },
     "MarebitsLocker": {
-      "address": "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
+      "address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
       "abi": [
         {
           "inputs": [
@@ -1422,19 +1414,6 @@
           "type": "function"
         },
         {
-          "inputs": [
-            {
-              "internalType": "string",
-              "name": "baseURI",
-              "type": "string"
-            }
-          ],
-          "name": "__setBaseURI",
-          "outputs": [],
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
           "inputs": [],
           "name": "accounts",
           "outputs": [
@@ -1482,105 +1461,6 @@
             }
           ],
           "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            {
-              "internalType": "uint256",
-              "name": "accountId",
-              "type": "uint256"
-            }
-          ],
-          "name": "getAccount",
-          "outputs": [
-            {
-              "components": [
-                {
-                  "internalType": "uint256",
-                  "name": "accountId",
-                  "type": "uint256"
-                },
-                {
-                  "internalType": "uint256",
-                  "name": "amount",
-                  "type": "uint256"
-                },
-                {
-                  "internalType": "uint256",
-                  "name": "tokenId",
-                  "type": "uint256"
-                },
-                {
-                  "internalType": "address",
-                  "name": "tokenContract",
-                  "type": "address"
-                },
-                {
-                  "internalType": "enum Token.Type",
-                  "name": "tokenType",
-                  "type": "uint8"
-                },
-                {
-                  "internalType": "uint64",
-                  "name": "unlockTime",
-                  "type": "uint64"
-                },
-                {
-                  "internalType": "bool",
-                  "name": "isBurned",
-                  "type": "bool"
-                },
-                {
-                  "internalType": "bool",
-                  "name": "isRedeemed",
-                  "type": "bool"
-                }
-              ],
-              "internalType": "struct Account.Info",
-              "name": "",
-              "type": "tuple"
-            }
-          ],
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            {
-              "internalType": "uint256",
-              "name": "accountId",
-              "type": "uint256"
-            }
-          ],
-          "name": "getMetadata",
-          "outputs": [
-            {
-              "internalType": "string",
-              "name": "",
-              "type": "string"
-            }
-          ],
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            {
-              "internalType": "uint256",
-              "name": "accountId",
-              "type": "uint256"
-            }
-          ],
-          "name": "getTokenUri",
-          "outputs": [
-            {
-              "internalType": "string",
-              "name": "",
-              "type": "string"
-            }
-          ],
-          "stateMutability": "view",
           "type": "function"
         },
         {
@@ -1638,25 +1518,6 @@
         {
           "inputs": [],
           "name": "owner",
-          "outputs": [
-            {
-              "internalType": "address",
-              "name": "",
-              "type": "address"
-            }
-          ],
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "inputs": [
-            {
-              "internalType": "uint256",
-              "name": "accountId",
-              "type": "uint256"
-            }
-          ],
-          "name": "ownerOf",
           "outputs": [
             {
               "internalType": "address",

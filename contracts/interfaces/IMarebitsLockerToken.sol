@@ -10,10 +10,24 @@ import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
  */
 interface IMarebitsLockerToken is IERC721Metadata, IRecoverable {
 	/**
+	 * @notice Emitted when the URI of the token `id` has changed to `value`
+	 * @param value of the new token URI
+	 * @param id of the token
+	 */
+	event URI(string value, uint256 indexed id);
+
+	/**
 	 * @notice Thrown when attempting to transfer a token the caller does not own or is not approved to transfer
 	 * @param tokenId for the token that is attempting to be transferred
 	 */
 	error NotApprovedOrOwner(uint256 tokenId);
+
+	/**
+	 * @notice Thrown when attempting to make a call that only the owner of this contract's owner can make
+	 * @param claimedOwner of the token
+	 * @param actualOwner of the token
+	 */
+	error NotLockerOwner(address claimedOwner, address actualOwner);
 
 	/**
 	 * @notice Burns the given token `tokenId`
@@ -46,7 +60,7 @@ interface IMarebitsLockerToken is IERC721Metadata, IRecoverable {
 
 	/**
 	 * @notice Sets the `__baseURI`
-	 * @dev Only callable by the {Ownable.owner} of this contract
+	 * @dev Only callable by the {Ownable.owner} of this contract's owner
 	 * @param baseURI that will be set as the new baseURI
 	 */
 	function __setBaseURI(string calldata baseURI) external;
@@ -61,16 +75,21 @@ interface IMarebitsLockerToken is IERC721Metadata, IRecoverable {
 	/**
 	 * @notice Gets the image URI for token `tokenId`
 	 * @param tokenId of the token for which you want the image URI
-	 * @return string token image URI
+	 * @return imageUri string token image URI
 	 */
-	function imageURI(uint256 tokenId) external view returns (string memory);
+	function imageURI(uint256 tokenId) external view returns (string memory imageUri);
 
 	/**
-	 * @notice Gets the metadata for token `tokenId`
-	 * @param tokenId of the token for which you want metadata
-	 * @return string token metadata
+	 * @notice Sets the image for the token `tokenId` to `imageUri`
+	 * @dev Only callable by the {Ownable.Owner} of this contract's owner
 	 */
-	function getMetadata(uint256 tokenId) external view returns (string memory);
+	function setImageURI(uint256 tokenId, string memory imageUri) external;
+
+	/**
+	 * @notice Sets the URI for the token `tokenId` to `tokenUri`
+	 * @dev Only callable by the {Ownable.Owner} of this contract's owner
+	 */
+	function setTokenURI(uint256 tokenId, string memory tokenUri) external;
 
 	/**
 	 * @notice Returns the URI for the token ID `tokenId`

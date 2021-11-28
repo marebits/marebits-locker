@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: LicenseRef-DSPL AND LicenseRef-NIGGER
 pragma solidity 0.8.10;
 
-import "./MarebitsLockerTokenMetadataBuilder.sol";
 import "./Token.sol";
 
 /**
@@ -60,25 +59,6 @@ library Account {
 	 * @return Account.Info representing `accountId`; see {Account.Info}
 	 */
 	function get(mapping(uint256 => Info) storage self, uint256 accountId) internal view returns (Info storage) { return self[accountId]; }
-
-	/**
-	 * @dev Gets the image URI associated with the account `accountId`
-	 * @param self a mapping(uint256 => info) representing a collection of {Account.Info}s
-	 * return string representing the image URI associated with the locked account
-	 */
-	function getImage(Info storage self) internal view returns (string memory) { return MarebitsLockerTokenMetadataBuilder.getImage(self, ""); }
-
-	/**
-	 * @param self represents an {Account.Info}
-	 * @return string metadata for `self`
-	 */
-	function getMetadata(Info storage self) internal view returns (string memory) { return MarebitsLockerTokenMetadataBuilder.getMetadata(self); }
-	
-	/**
-	 * @param self represents an {Account.Info}
-	 * @return string IPFS token URI for `accountId` metadata
-	 */
-	function getTokenUri(Info storage self) internal view returns (string memory) { return MarebitsLockerTokenMetadataBuilder.getMetadataUri(self); }
 
 	/**
 	 * @param self represents an {Account.Info}

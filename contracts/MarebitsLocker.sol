@@ -108,9 +108,6 @@ contract MarebitsLocker is OwnershipTransferrable, Recoverable, KnowsBestPony, R
 		super.__recoverTokens(tokenType, tokenContract, tokenId);
 	}
 
-	/// @inheritdoc IMarebitsLocker
-	function __setBaseURI(string calldata baseURI) external onlyOwner { lockerToken.__setBaseURI(baseURI); }
-
 	/**
 	 * @dev Checks if an account exists and reverts if it does not
 	 * @param accountId for account to check
@@ -258,16 +255,6 @@ contract MarebitsLocker is OwnershipTransferrable, Recoverable, KnowsBestPony, R
 	}
 
 	/// @inheritdoc IMarebitsLocker
-	function getAccount(uint256 accountId) external view returns (Account.Info memory) { return accounts.getAccount(accountId); }
-
-	/// @inheritdoc IMarebitsLocker
-	function getMetadata(uint256 accountId) external view returns (string memory) { return accounts.getMetadata(accountId); }
-
-	/// @inheritdoc IMarebitsLocker
-	function getTokenUri(uint256 accountId) external view returns (string memory) { return accounts.getTokenUri(accountId); }
-
-
-	/// @inheritdoc IMarebitsLocker
 	function lockTokens(Token.Type tokenType, address tokenContract, uint256 tokenId, uint256 amount, uint64 unlockTime) external nonReentrant onlyHuman returns (uint256) {
 		_checkTokenType(tokenType);
 		_checkTimeBounds(unlockTime, uint64(block.timestamp), MAXIMUM_TIME);
@@ -282,9 +269,6 @@ contract MarebitsLocker is OwnershipTransferrable, Recoverable, KnowsBestPony, R
 			return 0;
 		}
 	}
-
-	/// @inheritdoc IMarebitsLocker
-	function ownerOf(uint256 accountId) external view returns (address) { return lockerToken.ownerOf(accountId); }
 
 	/// @inheritdoc IMarebitsLocker
 	function redeemToken(uint256 accountId) external nonReentrant onlyHuman {

@@ -1,6 +1,7 @@
 artifacts/
 cache/
 contracts/verifyIPFS-master/
+contracts-deprecated/
 deployments/localhost/
 node_modules/
 secrets.json

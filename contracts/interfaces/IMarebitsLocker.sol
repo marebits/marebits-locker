@@ -92,13 +92,6 @@ interface IMarebitsLocker is IOwnershipTransferrable, IRecoverable {
 	/** @notice Thrown when a zero amount is passed */
 	error ZeroAmountGiven();
 
-	/**
-	 * @notice Sets the {MarebitsLockerToken.__baseURI}
-	 * @dev Only callable by the {Ownable.owner} of this contract
-	 * @param baseURI for the {MarebitsLockerToken}
-	 */
-	function __setBaseURI(string calldata baseURI) external;
-
 	/** @return IMarebitsLockerAccount associated with this {IMarebitsLocker} */
 	function accounts() external view returns (IMarebitsLockerAccount);
 
@@ -110,25 +103,6 @@ interface IMarebitsLocker is IOwnershipTransferrable, IRecoverable {
 	 * @return accountId for the locked tokens
 	 */
 	function extendLock(uint256 accountId, uint64 unlockTime) external returns (uint256);
-
-	/**
-	 * @notice Gets the account details for the account `accountId`
-	 * @param accountId (also `tokenId`) representing the locked account
-	 * @return Account.Info representing `accountId`; see {Account.Info}
-	 */
-	function getAccount(uint256 accountId) external view returns (Account.Info memory);
-
-	/**
-	 * @param accountId (also `tokenId`) representing the locked account
-	 * @return string metadata for `accountId`
-	 */
-	function getMetadata(uint256 accountId) external view returns (string memory);
-
-	/**
-	 * @param accountId (also `tokenId`) representing the locked account
-	 * @return string IPFS token URI for `accountId` metadata
-	 */
-	function getTokenUri(uint256 accountId) external view returns (string memory);
 
 	/** @return IMarebitsLockerToken associated with this {IMarebitsLocker} */
 	function lockerToken() external view returns (IMarebitsLockerToken);
@@ -144,12 +118,6 @@ interface IMarebitsLocker is IOwnershipTransferrable, IRecoverable {
 	 * @return accountId for the locked tokens
 	 */
 	function lockTokens(Token.Type tokenType, address tokenContract, uint256 tokenId, uint256 amount, uint64 unlockTime) external returns (uint256);
-
-	/**
-	 * @param accountId (also `tokenId`) representing the locked account
-	 * @return address of the owner of the account `accountId`
-	 */
-	function ownerOf(uint256 accountId) external view returns (address);
 
 	/**
 	 * @notice Redeems (burns) a Mare Bits Locker Token and transfers all locked tokens back to the caller

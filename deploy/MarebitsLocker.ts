@@ -13,17 +13,9 @@ const deployMarebitsLocker: DeployFunction = async function({ deployments, getCh
 	// tx.from = (await frame.request({ method: "eth_requestAccounts" }))[0];
 	// await frame.request({ method: "eth_sendTransaction", params: [tx] });
 	const deployer: string = (await getNamedAccounts()).deployer;
-	const marebitsLockerTokenMetadataSVGBuilder = await deployments.deploy("MarebitsLockerTokenMetadataSVGBuilder", { from: deployer, log: true });
-	const marebitsLockerTokenMetadataBuilder = await deployments.deploy("MarebitsLockerTokenMetadataBuilder", {
-		from: deployer, 
-		libraries: { MarebitsLockerTokenMetadataSVGBuilder: marebitsLockerTokenMetadataSVGBuilder.address }, 
-		log: true
-	});
-
 	await deployments.deploy("MarebitsLocker", {
-		args: ["Mare Bits Locker Token", "\uD83D\uDC0E\u200D\u2640\uFE0F\uD83D\uDD12\uD83E\uDE99", "ipfs://ipfs/"], 
+		args: ["Mare Bits Locker Token", "\uD83D\uDC0E\u200D\u2640\uFE0F\uD83D\uDD12\uD83E\uDE99", "https://locker.mare.biz/token/"], 
 		from: deployer, 
-		libraries: { MarebitsLockerTokenMetadataBuilder: marebitsLockerTokenMetadataBuilder.address }, 
 		log: true
 	});
 };

@@ -65,12 +65,6 @@ contract MarebitsLockerAccount is Recoverable, KnowsBestPony, IMarebitsLockerAcc
 	function getAmount(uint256 accountId) external view accountExists(accountId) returns (uint256) { return _accounts[accountId].amount; }
 
 	/// @inheritdoc IMarebitsLockerAccount
-	function getImage(uint256 accountId) external view accountExists(accountId) returns (string memory) { return _accounts[accountId].getImage(); }
-
-	/// @inheritdoc IMarebitsLockerAccount
-	function getMetadata(uint256 accountId) public view accountExists(accountId) returns (string memory) { return _accounts[accountId].getMetadata(); }
-
-	/// @inheritdoc IMarebitsLockerAccount
 	function getTokenContract(uint256 accountId) external view accountExists(accountId) returns (address) { return _accounts[accountId].tokenContract; }
 
 	/// @inheritdoc IMarebitsLockerAccount
@@ -78,9 +72,6 @@ contract MarebitsLockerAccount is Recoverable, KnowsBestPony, IMarebitsLockerAcc
 
 	/// @inheritdoc IMarebitsLockerAccount
 	function getTokenId(uint256 accountId) external view accountExists(accountId) returns (uint256) { return _accounts[accountId].tokenId; }
-
-	/// @inheritdoc IMarebitsLockerAccount
-	function getTokenUri(uint256 accountId) external view accountExists(accountId) returns (string memory) { return _accounts[accountId].getTokenUri(); }
 
 	/// @inheritdoc IMarebitsLockerAccount
 	function getUnlockTime(uint256 accountId) external view accountExists(accountId) returns (uint64) { return _accounts[accountId].unlockTime; }

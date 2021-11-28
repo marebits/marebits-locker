@@ -90,18 +90,6 @@ interface IMarebitsLockerAccount is IRecoverable {
 
 	/**
 	 * @param accountId (also `tokenId`) representing the locked account
-	 * @return string the image URI representing the tokens locked in the account `accountId`
-	 */
-	function getImage(uint256 accountId) external view returns (string memory);
-
-	/**
-	 * @param accountId (also `tokenId`) representing the locked account
-	 * @return string metadata for `accountId`
-	 */
-	function getMetadata(uint256 accountId) external view returns (string memory);
-
-	/**
-	 * @param accountId (also `tokenId`) representing the locked account
 	 * @return address token contract address for the tokens locked in the account `accountId`
 	 */
 	function getTokenContract(uint256 accountId) external view returns (address);
@@ -117,12 +105,6 @@ interface IMarebitsLockerAccount is IRecoverable {
 	 * @return uint256 token ID of the tokens locked in the account `accountId`
 	 */
 	function getTokenId(uint256 accountId) external view returns (uint256);
-
-	/**
-	 * @param accountId (also `tokenId`) representing the locked account
-	 * @return string IPFS token URI for `accountId` metadata
-	 */
-	function getTokenUri(uint256 accountId) external view returns (string memory);
 
 	/**
 	 * @param accountId (also `tokenId`) representing the locked account
