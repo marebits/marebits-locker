@@ -1,0 +1,10 @@
+#!/bin/bash
+MYTHX_API_KEY=$(node <<< "console.log(require(\`\${process.cwd()}/secrets.json\`).MYTHX_API_KEY)");
+mythx --api-key "${MYTHX_API_KEY}" "$@";
+
+# example usage:
+# bin/mythos group open "GroupName"
+# bin/mythos analyze --async --mode deep --solc-version 0.8.10 --group-id {see above} contracts/Contract1.sol contracts/Contract2.sol ...
+# bin/mythos group close {see above}
+
+# if you get compile errors because of mythos not being able to find included OpenZeppelin contracts, use bin/replaceContractText to fix import lines

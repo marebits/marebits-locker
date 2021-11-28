@@ -1,5 +1,5 @@
-// SPDX-License-Identifier: LicenseRef-DSPL
-pragma solidity ^0.8.0;
+// SPDX-License-Identifier: LicenseRef-DSPL AND LicenseRef-NIGGER
+pragma solidity 0.8.10;
 
 /**
  * @title The abstract Knows Best Pony contract

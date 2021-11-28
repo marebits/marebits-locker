@@ -1100,8 +1100,16 @@
         }
       ]
     },
-    "MarebitsLocker": {
+    "MarebitsLockerTokenMetadataSVGBuilder": {
       "address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+      "abi": []
+    },
+    "MarebitsLockerTokenMetadataBuilder": {
+      "address": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
+      "abi": []
+    },
+    "MarebitsLocker": {
+      "address": "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
       "abi": [
         {
           "inputs": [
@@ -1123,6 +1131,154 @@
           ],
           "stateMutability": "nonpayable",
           "type": "constructor"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "caller",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "owner",
+              "type": "address"
+            }
+          ],
+          "name": "CallerIsNotOwner",
+          "type": "error"
+        },
+        {
+          "inputs": [],
+          "name": "FailedSend",
+          "type": "error"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "required",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "available",
+              "type": "uint256"
+            }
+          ],
+          "name": "InsufficientBalance",
+          "type": "error"
+        },
+        {
+          "inputs": [],
+          "name": "InvalidCaller",
+          "type": "error"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "enum Token.Type",
+              "name": "tokenType",
+              "type": "uint8"
+            }
+          ],
+          "name": "InvalidTokenType",
+          "type": "error"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint64",
+              "name": "expiresAt",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "currentTime",
+              "type": "uint64"
+            }
+          ],
+          "name": "LockedAccount",
+          "type": "error"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "accountId",
+              "type": "uint256"
+            }
+          ],
+          "name": "NonexistentAccount",
+          "type": "error"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "tokenId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "claimedOwner",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "actualOwner",
+              "type": "address"
+            }
+          ],
+          "name": "NotTokenOwner",
+          "type": "error"
+        },
+        {
+          "inputs": [],
+          "name": "OwnerCannotBeZero",
+          "type": "error"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint64",
+              "name": "given",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "minimum",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "maximum",
+              "type": "uint64"
+            }
+          ],
+          "name": "TimeOutOfBounds",
+          "type": "error"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "tokenAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "string",
+              "name": "approvalFunction",
+              "type": "string"
+            }
+          ],
+          "name": "UnapprovedTokenTransfer",
+          "type": "error"
+        },
+        {
+          "inputs": [],
+          "name": "ZeroAmountGiven",
+          "type": "error"
         },
         {
           "anonymous": false,
@@ -1178,7 +1334,7 @@
             },
             {
               "indexed": false,
-              "internalType": "enum ITokenTypeable.TokenType",
+              "internalType": "enum Token.Type",
               "name": "tokenType",
               "type": "uint8"
             }
@@ -1221,7 +1377,7 @@
             },
             {
               "indexed": false,
-              "internalType": "enum ITokenTypeable.TokenType",
+              "internalType": "enum Token.Type",
               "name": "tokenType",
               "type": "uint8"
             },
@@ -1245,7 +1401,7 @@
         {
           "inputs": [
             {
-              "internalType": "enum ITokenTypeable.TokenType",
+              "internalType": "enum Token.Type",
               "name": "tokenType",
               "type": "uint8"
             },
@@ -1279,19 +1435,13 @@
           "type": "function"
         },
         {
-          "inputs": [
-            {
-              "internalType": "uint256",
-              "name": "accountId",
-              "type": "uint256"
-            }
-          ],
-          "name": "balanceOf",
+          "inputs": [],
+          "name": "accounts",
           "outputs": [
             {
-              "internalType": "uint256",
+              "internalType": "contract IMarebitsLockerAccount",
               "name": "",
-              "type": "uint256"
+              "type": "address"
             }
           ],
           "stateMutability": "view",
@@ -1324,7 +1474,13 @@
             }
           ],
           "name": "extendLock",
-          "outputs": [],
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
           "stateMutability": "nonpayable",
           "type": "function"
         },
@@ -1342,7 +1498,17 @@
               "components": [
                 {
                   "internalType": "uint256",
+                  "name": "accountId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
                   "name": "amount",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "tokenId",
                   "type": "uint256"
                 },
                 {
@@ -1351,12 +1517,7 @@
                   "type": "address"
                 },
                 {
-                  "internalType": "uint256",
-                  "name": "tokenId",
-                  "type": "uint256"
-                },
-                {
-                  "internalType": "enum ITokenTypeable.TokenType",
+                  "internalType": "enum Token.Type",
                   "name": "tokenType",
                   "type": "uint8"
                 },
@@ -1364,9 +1525,19 @@
                   "internalType": "uint64",
                   "name": "unlockTime",
                   "type": "uint64"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isBurned",
+                  "type": "bool"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isRedeemed",
+                  "type": "bool"
                 }
               ],
-              "internalType": "struct IMarebitsLockerAccount.Account",
+              "internalType": "struct Account.Info",
               "name": "",
               "type": "tuple"
             }
@@ -1377,7 +1548,45 @@
         {
           "inputs": [
             {
-              "internalType": "enum ITokenTypeable.TokenType",
+              "internalType": "uint256",
+              "name": "accountId",
+              "type": "uint256"
+            }
+          ],
+          "name": "getMetadata",
+          "outputs": [
+            {
+              "internalType": "string",
+              "name": "",
+              "type": "string"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "accountId",
+              "type": "uint256"
+            }
+          ],
+          "name": "getTokenUri",
+          "outputs": [
+            {
+              "internalType": "string",
+              "name": "",
+              "type": "string"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "enum Token.Type",
               "name": "tokenType",
               "type": "uint8"
             },
@@ -1411,6 +1620,19 @@
             }
           ],
           "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "lockerToken",
+          "outputs": [
+            {
+              "internalType": "contract IMarebitsLockerToken",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
           "type": "function"
         },
         {
@@ -1496,6 +1718,23 @@
           "outputs": [],
           "stateMutability": "nonpayable",
           "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "vault",
+          "outputs": [
+            {
+              "internalType": "contract IMarebitsVault",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "stateMutability": "payable",
+          "type": "receive"
         }
       ]
     }

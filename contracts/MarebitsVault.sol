@@ -1,11 +1,11 @@
-// SPDX-License-Identifier: LicenseRef-DSPL
-pragma solidity ^0.8.0;
+// SPDX-License-Identifier: LicenseRef-DSPL AND LicenseRef-NIGGER
+pragma solidity 0.8.10;
 
 import "./interfaces/IMarebitsVault.sol";
 import "./KnowsBestPony.sol";
+import "./libraries/Token.sol";
+import "./Ownable.sol";
 import "./RecoverableEther.sol";
-import "./TokenTypeable.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
 import "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol";
 import "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Receiver.sol";
@@ -24,12 +24,12 @@ contract MarebitsVault is ERC1155Holder, ERC721Holder, KnowsBestPony, Recoverabl
 	using SafeERC20 for IERC20;
 
 	/// @inheritdoc IMarebitsVault
-	function __transfer(TokenType tokenType, address tokenContract, address payable to, uint256 tokenId, uint256 amount) external onlyOwner {
-		if (tokenType == TokenType.ERC1155) {
+	function __transfer(Token.Type tokenType, address tokenContract, address payable to, uint256 tokenId, uint256 amount) external onlyOwner {
+		if (tokenType == Token.Type.ERC1155) {
 			_transferERC1155(IERC1155(tokenContract), to, tokenId, amount);
-		} else if (tokenType == TokenType.ERC20) {
+		} else if (tokenType == Token.Type.ERC20) {
 			_transferERC20(IERC20(tokenContract), to, amount);
-		} else if (tokenType == TokenType.ERC721) {
+		} else if (tokenType == Token.Type.ERC721) {
 			_transferERC721(IERC721(tokenContract), to, tokenId);
 		}
 	}
@@ -63,11 +63,11 @@ contract MarebitsVault is ERC1155Holder, ERC721Holder, KnowsBestPony, Recoverabl
 	* @dev Implementation of the {IERC165} interface.
 	* @inheritdoc ERC165
 	*/
-	function supportsInterface(bytes4 interfaceId) public view virtual override(ERC1155Receiver, IERC165) returns (bool) {
+	function supportsInterface(bytes4 interfaceId) public view virtual override(ERC1155Receiver, IERC165, RecoverableEther) returns (bool) {
 		return interfaceId == type(IERC721Receiver).interfaceId || 
 			interfaceId == type(KnowsBestPony).interfaceId || 
-			interfaceId == type(Ownable).interfaceId || 
 			interfaceId == type(RecoverableEther).interfaceId || 
-			super.supportsInterface(interfaceId);
+			ERC1155Receiver.supportsInterface(interfaceId) || 
+			RecoverableEther.supportsInterface(interfaceId);
 	}
 }

@@ -4,6 +4,7 @@
 	"description": "A way to lock-up your ERC20, ERC721, or ERC1155 tokens and keep them safe from that waifu thief Brad.  Issues an ERC721 token that can be used to unlock your tokens after the unlock date has passed.",
 	"main": "",
 	"scripts": {
+		"build": "bin/build", 
 		"compile": "npx hardhat compile",
 		"console": "npx hardhat console --network localhost",
 		"deploy": "npx hardhat deploy --export abi/MarebitsLocker.json --network localhost",

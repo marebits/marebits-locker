@@ -1,0 +1,4 @@
+#!/bin/bash
+# searches for the first parameter (escaped sed string) and replaces it with the second parameter (escaped sed string)
+# Only searches within contracts in the contracts/ dir
+find contracts/ -type f -regex ".*\.sol$" -exec sed -i "s/${1}/${2}/" {} \;;

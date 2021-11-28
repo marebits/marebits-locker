@@ -1,13 +1,20 @@
-// SPDX-License-Identifier: LicenseRef-DSPL
-pragma solidity ^0.8.0;
+// SPDX-License-Identifier: LicenseRef-DSPL AND LicenseRef-NIGGER
+pragma solidity 0.8.10;
 
+import "./IRecoverable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 
 /**
  * @title The interface for the Mare Bits Locker Token
  * @author Twifag
  */
-interface IMarebitsLockerToken is IERC721Metadata {
+interface IMarebitsLockerToken is IERC721Metadata, IRecoverable {
+	/**
+	 * @notice Thrown when attempting to transfer a token the caller does not own or is not approved to transfer
+	 * @param tokenId for the token that is attempting to be transferred
+	 */
+	error NotApprovedOrOwner(uint256 tokenId);
+
 	/**
 	 * @notice Burns the given token `tokenId`
 	 * @dev Only callable by the {Ownable.owner} of this contract
@@ -50,6 +57,20 @@ interface IMarebitsLockerToken is IERC721Metadata {
 	 * @param tokenId of the token to burn/destroy
 	 */
 	function burn(uint256 tokenId) external;
+
+	/**
+	 * @notice Gets the image URI for token `tokenId`
+	 * @param tokenId of the token for which you want the image URI
+	 * @return string token image URI
+	 */
+	function imageURI(uint256 tokenId) external view returns (string memory);
+
+	/**
+	 * @notice Gets the metadata for token `tokenId`
+	 * @param tokenId of the token for which you want metadata
+	 * @return string token metadata
+	 */
+	function getMetadata(uint256 tokenId) external view returns (string memory);
 
 	/**
 	 * @notice Returns the URI for the token ID `tokenId`

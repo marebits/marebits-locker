@@ -1,0 +1,4 @@
+#!/bin/bash
+# Re-builds everything from scratch, good to make sure build-info doesn't get stale or weird
+rm -rf artifacts/;
+npm run compile;

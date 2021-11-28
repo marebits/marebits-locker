@@ -1,16 +1,20 @@
-// SPDX-License-Identifier: LicenseRef-DSPL
-pragma solidity ^0.8.0;
+// SPDX-License-Identifier: LicenseRef-DSPL AND LicenseRef-NIGGER
+pragma solidity 0.8.10;
 
 import "./interfaces/IMarebitsLocker.sol";
 import "./interfaces/IMarebitsLockerAccount.sol";
+import "./interfaces/IMarebitsLockerToken.sol";
+import "./interfaces/IMarebitsVault.sol";
+import "./interfaces/IRecoverableEther.sol";
+import "./interfaces/IRecoverableTokens.sol";
 import "./KnowsBestPony.sol";
+import "./libraries/Account.sol";
+import "./libraries/Token.sol";
 import "./MarebitsLockerAccount.sol";
 import "./MarebitsLockerToken.sol";
 import "./MarebitsVault.sol";
-import "./RecoverableEther.sol";
-import "./RecoverableTokens.sol";
-import "./TokenTypeable.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "./Recoverable.sol";
+import "./OwnershipTransferrable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -19,31 +23,51 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "@openzeppelin/contracts/utils/Address.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 
 /**
  * @title The implementation for the Mare Bits Locker
  * @author Twifag
  */
-contract MarebitsLocker is ERC165, TokenTypeable, RecoverableEther, RecoverableTokens, KnowsBestPony, ReentrancyGuard, IMarebitsLocker {
-	using Address for address;
+contract MarebitsLocker is OwnershipTransferrable, Recoverable, KnowsBestPony, ReentrancyGuard, IMarebitsLocker {
 	using SafeERC20 for IERC20;
+	using Token for Token.Type;
 
-	/** @dev The {MarebitsLockerAccount} contract */
-	MarebitsLockerAccount private immutable _lockerAccount;
+	/** @dev the maximum value for time (uint64) */
+	uint64 private constant MAXIMUM_TIME = (2 << 63) - 1;
 
-	/** @dev The {MarebitsLockerToken} contract, representing the token issued when tokens are locked */
-	MarebitsLockerToken private immutable _lockerToken;
+	/// @inheritdoc IMarebitsLocker
+	IMarebitsLockerAccount public immutable accounts;
 
-	/** @dev The {MarebitsVault} where all tokens (ERC20, ERC721, and ERC1155) are held in escrow while locked */
-	MarebitsVault private immutable _vault;
+	/// @inheritdoc IMarebitsLocker
+	IMarebitsLockerToken public immutable lockerToken;
+
+	/// @inheritdoc IMarebitsLocker
+	IMarebitsVault public immutable vault;
+
+	/**
+	 * @dev Must pass a non-zero amount
+	 * @param amount that must be greater than zero
+	 */
+	modifier nonZeroAmount(uint256 amount) {
+		if (amount == 0) {
+			revert ZeroAmountGiven();
+		}
+		_;
+	}
 
 	/** @dev Only humans can interact */
 	modifier onlyHuman() {
-		require(!_msgSender().isContract(), "Caller cannot be a smart contract");
+		address account = _msgSender();
+		uint256 size;
+
+		assembly {
+			size := extcodesize(account)
+		}
+
+		if (size > 0) {
+			revert InvalidCaller();
+		}
 		_;
 	}
 
@@ -53,20 +77,23 @@ contract MarebitsLocker is ERC165, TokenTypeable, RecoverableEther, RecoverableT
 	 * @param baseURI initially set for the {MarebitsLockerToken}
 	 */
 	constructor(string memory name, string memory symbol, string memory baseURI) {
-		_lockerAccount = new MarebitsLockerAccount();
-		_lockerToken = new MarebitsLockerToken(name, symbol, baseURI, _lockerAccount);
-		_vault = new MarebitsVault();
+		accounts = new MarebitsLockerAccount();
+		lockerToken = new MarebitsLockerToken(name, symbol, baseURI);
+		vault = new MarebitsVault();
 	}
+
+	/** @notice In the case of child contracts somehow receiving ether, this lets us recover it from them.  Do not send ether to any of these contracts, please! */
+	receive() external payable {}
 
 	/**
 	 * @notice Recovers ether accidentally sent to this contract or the contracts owned by this one ({MarebitsLockerAccount}, {MarebitsLockerToken}, and {MarebitsVault})
 	 * @dev Only callable by the {Ownable.owner} of this contract
 	 * @inheritdoc RecoverableEther
 	 */
-	function __recoverEther() public override(RecoverableEther) payable onlyOwner {
-		_lockerAccount.__recoverEther();
-		_lockerToken.__recoverEther();
-		_vault.__recoverEther();
+	function __recoverEther() public override(IRecoverableEther, RecoverableEther) payable onlyOwner {
+		accounts.__recoverEther();
+		lockerToken.__recoverEther();
+		vault.__recoverEther();
 		super.__recoverEther();
 	}
 
@@ -75,39 +102,101 @@ contract MarebitsLocker is ERC165, TokenTypeable, RecoverableEther, RecoverableT
 	 * @dev Only callable by the {Ownable.owner} of this contract
 	 * @inheritdoc RecoverableTokens
 	 */
-	function __recoverTokens(TokenType tokenType, address tokenContract, uint256 tokenId) public override(RecoverableTokens) onlyOwner {
-		_lockerAccount.__recoverTokens(tokenType, tokenContract, tokenId);
-		_lockerToken.__recoverTokens(tokenType, tokenContract, tokenId);
+	function __recoverTokens(Token.Type tokenType, address tokenContract, uint256 tokenId) public override(IRecoverableTokens, RecoverableTokens) onlyOwner {
+		accounts.__recoverTokens(tokenType, tokenContract, tokenId);
+		lockerToken.__recoverTokens(tokenType, tokenContract, tokenId);
 		super.__recoverTokens(tokenType, tokenContract, tokenId);
 	}
 
 	/// @inheritdoc IMarebitsLocker
-	function __setBaseURI(string calldata baseURI) external onlyOwner { _lockerToken.__setBaseURI(baseURI); }
+	function __setBaseURI(string calldata baseURI) external onlyOwner { lockerToken.__setBaseURI(baseURI); }
 
-	// function __setTokenURI(uint256 tokenId, string calldata tokenUri) external onlyOwner { _lockerToken.__setTokenURI(tokenId, tokenUri); }
+	/**
+	 * @dev Checks if an account exists and reverts if it does not
+	 * @param accountId for account to check
+	 */
+	function _checkAccountExists(uint256 accountId) private view {
+		if (!lockerToken.__exists(accountId)) {
+			revert NonexistentAccount(accountId);
+		}
+	}
+
+	/**
+	 * @dev Checks if approval has been received to transfer a token and reverts if not
+	 * @param isApproved is true when approval has been received; otherwise, false
+	 * @param tokenAddress of the token for which approval is being requested to transfer
+	 * @param approvalFunction that needs to be called in order to grant approval
+	 */
+	function _checkApproval(bool isApproved, address tokenAddress, string memory approvalFunction) private pure {
+		if (!isApproved) {
+			revert UnapprovedTokenTransfer(tokenAddress, approvalFunction);
+		}
+	}
+
+	/**
+	 * @dev Checks if the token is owned by the address `claimedOwner` and reverts if not
+	 * @param tokenId of the token to check
+	 * @param claimedOwner address that is claiming ownership of the token
+	 * @param actualOwner address of the actual owner of the token
+	 */
+	function _checkOwner(uint256 tokenId, address claimedOwner, address actualOwner) private pure {
+		if (claimedOwner != actualOwner) {
+			revert NotTokenOwner(tokenId, claimedOwner, actualOwner);
+		}
+	}
+
+	/**
+	 * @dev Checks if there is sufficient balance and reverts if not
+	 * @param required balance
+	 * @param available balance
+	 */
+	function _checkSufficientBalance(uint256 required, uint256 available) private pure {
+		if (required > available) {
+			revert InsufficientBalance(required, available);
+		}
+	}
+
+	/**
+	 * @dev Checks if the time `given` falls within the bounds of `maximum` and `minimum` and reverts if not
+	 * @param given time (in seconds since UNIX epoch)
+	 * @param minimum time bound (in seconds since UNIX epoch)
+	 * @param maximum time bound (in seconds since UNIX epoch)
+	 */
+	function _checkTimeBounds(uint64 given, uint64 minimum, uint64 maximum) private pure {
+		if (given < minimum || given > maximum) {
+			revert TimeOutOfBounds(given, minimum, maximum);
+		}
+	}
+
+	/**
+	 * @dev Checks if the given token type is valid and reverts if not
+	 * @param tokenType to check
+	 */
+	function _checkTokenType(Token.Type tokenType) private pure {
+		if (!tokenType.isValid()) {
+			revert InvalidTokenType(tokenType);
+		}
+	}
 	
 	/**
 	 * @dev Gets a new `accountId` and creates a new {MarebitsLockerAccount}
 	 * @param amount of tokens to lock in locker
 	 * @param tokenContract for the token to be locked
 	 * @param tokenId of the token to be locked; should always be 0 for locked ERC20 tokens
-	 * @param tokenType of token to be locked; see {ITokenTypeable.TokenType}
+	 * @param tokenType of token to be locked; see {Token.Type}
 	 * @param unlockTime after which locked tokens can be withdrawn (in seconds after UNIX epoch)
 	 * @return accountId for the newly created account
 	 */
-	function _createAccount(uint256 amount, address tokenContract, uint256 tokenId, TokenType tokenType, uint64 unlockTime) private returns (uint256 accountId) {
-		accountId = _lockerToken.__getNextTokenId();
-		_lockerAccount.__createAccount(accountId, amount, tokenContract, tokenId, tokenType, unlockTime);
+	function _createAccount(uint256 amount, address tokenContract, uint256 tokenId, Token.Type tokenType, uint64 unlockTime) private returns (uint256 accountId) {
+		accountId = lockerToken.__getNextTokenId();
+		accounts.__createAccount(accountId, amount, tokenContract, tokenId, tokenType, unlockTime);
 	}
 
 	/**
 	 * @dev Issues a new token by calling {MarebitsLockerToken#__issueToken}
 	 * @param accountId (also `tokenId`) representing the locked account
 	 */
-	function _issueToken(uint256 accountId) private {
-		// _lockerToken.__issueToken(payable(_msgSender()), accountId, _lockerAccount.getTokenUri(accountId));
-		_lockerToken.__issueToken(payable(_msgSender()), accountId);
-	}
+	function _issueToken(uint256 accountId) private { lockerToken.__issueToken(payable(_msgSender()), accountId); }
 
 	/**
 	 * @dev Locks ERC1155 tokens in a Mare Bits Locker and issues a redeemable Mare Bits Locker Token that can be used to unlock the tokens after the time `unlockTime` has passed
@@ -117,14 +206,13 @@ contract MarebitsLocker is ERC165, TokenTypeable, RecoverableEther, RecoverableT
 	 * @param unlockTime after which locked tokens can be withdrawn (in seconds after UNIX epoch)
 	 * @return accountId (also `tokenId`) representing the locked account
 	 */
-	function _lockERC1155(IERC1155 token, uint256 tokenId, uint256 amount, uint64 unlockTime) private returns (uint256 accountId) {
-		require(amount > 0, "`amount` must be > 0");
-		require(token.balanceOf(_msgSender(), tokenId) >= amount, "`amount` must be <= total token balance");
-		require(token.isApprovedForAll(_msgSender(), address(this)), "Not approved, you must call `token.setApprovalForAll()`");
-		accountId = _createAccount(amount, address(token), tokenId, TokenType.ERC1155, unlockTime);
-		token.safeTransferFrom(_msgSender(), payable(address(_vault)), tokenId, amount, "");
+	function _lockERC1155(IERC1155 token, uint256 tokenId, uint256 amount, uint64 unlockTime) private nonZeroAmount(amount) returns (uint256 accountId) {
+		_checkSufficientBalance(amount, token.balanceOf(_msgSender(), tokenId));
+		_checkApproval(token.isApprovedForAll(_msgSender(), address(this)), address(token), "setApprovalForAll()");
+		accountId = _createAccount(amount, address(token), tokenId, Token.Type.ERC1155, unlockTime);
+		token.safeTransferFrom(_msgSender(), payable(address(vault)), tokenId, amount, "");
 		_issueToken(accountId);
-		emit TokensLocked(accountId, _msgSender(), amount, address(token), tokenId, TokenType.ERC1155, unlockTime);
+		emit TokensLocked(accountId, _msgSender(), amount, address(token), tokenId, Token.Type.ERC1155, unlockTime);
 	}
 
 	/**
@@ -134,14 +222,13 @@ contract MarebitsLocker is ERC165, TokenTypeable, RecoverableEther, RecoverableT
 	 * @param unlockTime after which locked tokens can be withdrawn (in seconds after UNIX epoch)
 	 * @return accountId (also `tokenId`) representing the locked account
 	 */
-	function _lockERC20(IERC20 token, uint256 amount, uint64 unlockTime) private returns (uint256 accountId) {
-		require(amount > 0, "`amount` must be > 0");
-		require(token.balanceOf(_msgSender()) >= amount, "`amount` must be <= total token balance");
-		require(token.allowance(_msgSender(), address(this)) >= amount, "Not approved, you must call `token.approve()`");
-		accountId = _createAccount(amount, address(token), 0, TokenType.ERC20, unlockTime);
-		token.safeTransferFrom(_msgSender(), payable(address(_vault)), amount);
+	function _lockERC20(IERC20 token, uint256 amount, uint64 unlockTime) private nonZeroAmount(amount) returns (uint256 accountId) {
+		_checkSufficientBalance(amount, token.balanceOf(_msgSender()));
+		_checkApproval(token.allowance(_msgSender(), address(this)) >= amount, address(token), "approve()");
+		accountId = _createAccount(amount, address(token), 0, Token.Type.ERC20, unlockTime);
+		token.safeTransferFrom(_msgSender(), payable(address(vault)), amount);
 		_issueToken(accountId);
-		emit TokensLocked(accountId, _msgSender(), amount, address(token), 0, TokenType.ERC20, unlockTime);
+		emit TokensLocked(accountId, _msgSender(), amount, address(token), 0, Token.Type.ERC20, unlockTime);
 	}
 
 	/**
@@ -152,43 +239,44 @@ contract MarebitsLocker is ERC165, TokenTypeable, RecoverableEther, RecoverableT
 	 * @return accountId (also `tokenId`) representing the locked account
 	 */
 	function _lockERC721(IERC721 token, uint256 tokenId, uint64 unlockTime) private returns (uint256 accountId) {
-		require(token.ownerOf(tokenId) == _msgSender(), "`tokenId` not owned by caller");
-		require(token.getApproved(tokenId) == address(this), "Not approved, you must call `token.approve()`");
-		accountId = _createAccount(1, address(token), tokenId, TokenType.ERC721, unlockTime);
-		token.safeTransferFrom(_msgSender(), payable(address(_vault)), tokenId);
+		_checkOwner(tokenId, _msgSender(), token.ownerOf(tokenId));
+		_checkApproval(token.getApproved(tokenId) == address(this), address(token), "approve()");
+		accountId = _createAccount(1, address(token), tokenId, Token.Type.ERC721, unlockTime);
+		token.safeTransferFrom(_msgSender(), payable(address(vault)), tokenId);
 		_issueToken(accountId);
-		emit TokensLocked(accountId, _msgSender(), 1, address(token), tokenId, TokenType.ERC721, unlockTime);
+		emit TokensLocked(accountId, _msgSender(), 1, address(token), tokenId, Token.Type.ERC721, unlockTime);
 	}
 
 	/// @inheritdoc IMarebitsLocker
 	function extendLock(uint256 accountId, uint64 unlockTime) external onlyHuman returns (uint256) {
-		require(_lockerToken.__exists(accountId), "Token for `accountId` does not exist");
-		require(_lockerToken.ownerOf(accountId) == _msgSender(), "Not the owner of this `accountId`");
-		require(unlockTime > _lockerAccount.getUnlockTime(accountId), "New `unlockTime` must be > the existing `unlockTime`");
-		_lockerAccount.__setUnlockTime(accountId, unlockTime);
-		emit TokensLocked(accountId, _msgSender(), _lockerAccount.getAmount(accountId), _lockerAccount.getTokenContract(accountId), _lockerAccount.getTokenId(accountId), _lockerAccount.getTokenType(accountId), unlockTime);
+		_checkAccountExists(accountId);
+		_checkOwner(accountId, _msgSender(), lockerToken.ownerOf(accountId));
+		_checkTimeBounds(unlockTime, accounts.getUnlockTime(accountId), MAXIMUM_TIME);
+		accounts.__setUnlockTime(accountId, unlockTime);
+		emit TokensLocked(accountId, _msgSender(), accounts.getAmount(accountId), accounts.getTokenContract(accountId), accounts.getTokenId(accountId), accounts.getTokenType(accountId), unlockTime);
 		return accountId;
 	}
 
 	/// @inheritdoc IMarebitsLocker
-	function getAccount(uint256 accountId) external view returns (IMarebitsLockerAccount.Account memory) { return _lockerAccount.getAccount(accountId); }
+	function getAccount(uint256 accountId) external view returns (Account.Info memory) { return accounts.getAccount(accountId); }
 
 	/// @inheritdoc IMarebitsLocker
-	function getMetadata(uint256 accountId) external view returns (string memory) { return _lockerAccount.getMetadata(accountId); }
+	function getMetadata(uint256 accountId) external view returns (string memory) { return accounts.getMetadata(accountId); }
 
 	/// @inheritdoc IMarebitsLocker
-	function getTokenUri(uint256 accountId) external view returns (string memory) { return _lockerAccount.getTokenUri(accountId); }
+	function getTokenUri(uint256 accountId) external view returns (string memory) { return accounts.getTokenUri(accountId); }
 
 
 	/// @inheritdoc IMarebitsLocker
-	function lockTokens(TokenType tokenType, address tokenContract, uint256 tokenId, uint256 amount, uint64 unlockTime) external nonReentrant onlyHuman isValidTokenType(tokenType) returns (uint256) {
-		require(uint256(unlockTime) > block.timestamp, "`unlockTime` must be in the future");
+	function lockTokens(Token.Type tokenType, address tokenContract, uint256 tokenId, uint256 amount, uint64 unlockTime) external nonReentrant onlyHuman returns (uint256) {
+		_checkTokenType(tokenType);
+		_checkTimeBounds(unlockTime, uint64(block.timestamp), MAXIMUM_TIME);
 
-		if (tokenType == TokenType.ERC1155) {
+		if (tokenType == Token.Type.ERC1155) {
 			return _lockERC1155(IERC1155(tokenContract), tokenId, amount, unlockTime);
-		} else if (tokenType == TokenType.ERC20) {
+		} else if (tokenType == Token.Type.ERC20) {
 			return _lockERC20(IERC20(tokenContract), amount, unlockTime);
-		} else if (tokenType == TokenType.ERC721) {
+		} else if (tokenType == Token.Type.ERC721) {
 			return _lockERC721(IERC721(tokenContract), tokenId, unlockTime);
 		} else {
 			return 0;
@@ -196,31 +284,30 @@ contract MarebitsLocker is ERC165, TokenTypeable, RecoverableEther, RecoverableT
 	}
 
 	/// @inheritdoc IMarebitsLocker
-	function ownerOf(uint256 accountId) external view returns (address) { return _lockerToken.ownerOf(accountId); }
+	function ownerOf(uint256 accountId) external view returns (address) { return lockerToken.ownerOf(accountId); }
 
 	/// @inheritdoc IMarebitsLocker
 	function redeemToken(uint256 accountId) external nonReentrant onlyHuman {
-		require(_lockerToken.__exists(accountId), "Token for `accountId` does not exist");
-		require(_lockerToken.ownerOf(accountId) == _msgSender(), "Not the owner of this `accountId`");
-		require(_lockerAccount.isUnlocked(accountId), "`unlockTime` not expired");
-		require(_lockerAccount.getAmount(accountId) > 0, "Account has no balance");
-		_lockerAccount.__redeem(accountId);
-		_lockerToken.__burn(accountId);
-		_vault.__transfer(_lockerAccount.getTokenType(accountId), _lockerAccount.getTokenContract(accountId), payable(_msgSender()), _lockerAccount.getTokenId(accountId), _lockerAccount.getAmount(accountId));
-		emit TokenRedeemed(accountId, _msgSender(), _lockerAccount.getAmount(accountId), _lockerAccount.getTokenContract(accountId), _lockerAccount.getTokenId(accountId), _lockerAccount.getTokenType(accountId));
+		if (!accounts.isUnlocked(accountId)) {
+			revert LockedAccount(accounts.getUnlockTime(accountId), uint64(block.timestamp));
+		}
+		_checkAccountExists(accountId);
+		_checkOwner(accountId, _msgSender(), lockerToken.ownerOf(accountId));
+		_checkSufficientBalance(1, accounts.getAmount(accountId));
+		accounts.__redeem(accountId);
+		lockerToken.__burn(accountId);
+		vault.__transfer(accounts.getTokenType(accountId), accounts.getTokenContract(accountId), payable(_msgSender()), accounts.getTokenId(accountId), accounts.getAmount(accountId));
+		emit TokenRedeemed(accountId, _msgSender(), accounts.getAmount(accountId), accounts.getTokenContract(accountId), accounts.getTokenId(accountId), accounts.getTokenType(accountId));
 	}
 
 	/**
 	* @dev Implementation of the {IERC165} interface.
 	* @inheritdoc ERC165
 	*/
-	function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, ERC165) returns (bool) {
+	function supportsInterface(bytes4 interfaceId) public view virtual override(IERC165, OwnershipTransferrable, Recoverable) returns (bool) {
 		return interfaceId == type(IMarebitsLocker).interfaceId || 
 			interfaceId == type(KnowsBestPony).interfaceId || 
-			interfaceId == type(Ownable).interfaceId || 
-			interfaceId == type(RecoverableEther).interfaceId ||
-			interfaceId == type(RecoverableTokens).interfaceId || 
-			interfaceId == type(TokenTypeable).interfaceId || 
-			super.supportsInterface(interfaceId);
+			OwnershipTransferrable.supportsInterface(interfaceId) || 
+			Recoverable.supportsInterface(interfaceId);
 	}
 }
