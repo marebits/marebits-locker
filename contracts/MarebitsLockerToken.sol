@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: LicenseRef-DSPL AND LicenseRef-NIGGER
 pragma solidity 0.8.10;
 
-import "./interfaces/IMarebitsLockerAccount.sol";
+import "./interfaces/IMarebitsLocker.sol";
 import "./interfaces/IMarebitsLockerToken.sol";
 import "./interfaces/IOwnable.sol";
 import "./KnowsBestPony.sol";
@@ -24,13 +24,10 @@ contract MarebitsLockerToken is Recoverable, ERC721Enumerable, KnowsBestPony, IM
 	string private __baseURI;
 
 	/** @dev Optional mapping for image URIs */
-	mapping(uint256 => string) private _imageURIs;
+	// mapping(uint256 => string) private _imageURIs;
 
 	/** @dev uint256 to keep track of the tokens as they are created */
 	uint256 private _tokenIdTracker;
-
-	/** @dev Optional mapping for token URIs */
-	mapping(uint256 => string) private _tokenURIs;
 
 	/** @dev Require that the caller is the same address as the owner of this contract's owner */
 	modifier onlyLockerOwner() {
@@ -78,9 +75,7 @@ contract MarebitsLockerToken is Recoverable, ERC721Enumerable, KnowsBestPony, IM
 	 * @inheritdoc ERC721
 	 */
 	function _burn(uint256 tokenId) internal override {
-		IMarebitsLockerAccount(owner()).__burn(tokenId);
-		delete _imageURIs[tokenId];
-		delete _tokenURIs[tokenId];
+		IMarebitsLocker(owner()).__burn(tokenId);
 		super._burn(tokenId);
 	}
 
@@ -99,22 +94,7 @@ contract MarebitsLockerToken is Recoverable, ERC721Enumerable, KnowsBestPony, IM
 	}
 
 	/// @inheritdoc IMarebitsLockerToken
-	function imageURI(uint256 tokenId) external view returns (string memory imageUri) {
-		imageUri = _imageURIs[tokenId];
-
-		if (bytes(imageUri).length == 0) {
-			imageUri = _generateURI(tokenId.toString(), ".svg");
-		}
-	}
-
-	/// @inheritdoc IMarebitsLockerToken
-	function setImageURI(uint256 tokenId, string memory imageUri) public onlyLockerOwner { _imageURIs[tokenId] = imageUri; }
-
-	/// @inheritdoc IMarebitsLockerToken
-	function setTokenURI(uint256 tokenId, string memory tokenUri) public onlyLockerOwner {
-		_tokenURIs[tokenId] = tokenUri;
-		emit URI(tokenUri, tokenId);
-	}
+	// function imageURI(uint256 tokenId) external view returns (string memory) {return _generateURI(tokenId.toString(), ".svg"); }
 
 	/**
 	* @dev Implementation of the {IERC165} interface.
@@ -130,14 +110,8 @@ contract MarebitsLockerToken is Recoverable, ERC721Enumerable, KnowsBestPony, IM
 	}
 
 	/// @inheritdoc ERC721
-	function tokenURI(uint256 tokenId) public view override(ERC721, IERC721Metadata) returns (string memory tokenUri) {
-		tokenUri = _tokenURIs[tokenId];
-
-		if (bytes(tokenUri).length == 0) {
-			tokenUri = _generateURI(tokenId.toString(), ".json");
-		}
-	}
+	function tokenURI(uint256 tokenId) public view override(ERC721, IERC721Metadata) returns (string memory tokenUri) { tokenUri = _generateURI(tokenId.toString(), ".json"); }
 
 	/// @inheritdoc IMarebitsLockerToken
-	function uri(uint256 tokenId) external view returns (string memory) { return tokenURI(tokenId); }
+	// function uri(uint256 tokenId) external view returns (string memory) { return tokenURI(tokenId); }
 }

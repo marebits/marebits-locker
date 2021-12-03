@@ -44,6 +44,12 @@ interface IMarebitsLocker is IOwnershipTransferrable, IRecoverable {
 	 */
 	error InsufficientBalance(uint256 required, uint256 available);
 
+	/**
+	 * @notice Thrown when an invalid amount is entered
+	 * @param reason amount is invalid
+	 */
+	error InvalidAmount(string reason);
+
 	/** @notice Thrown when called by an invalid caller (such as a contract) */
 	error InvalidCaller();
 
@@ -59,6 +65,12 @@ interface IMarebitsLocker is IOwnershipTransferrable, IRecoverable {
 	 * @param currentTime (in seconds since UNIX epoch)
 	 */
 	error LockedAccount(uint64 expiresAt, uint64 currentTime);
+
+	/**
+	 * @notice Thrown when someone attempts to interact with this contract who does not hodl $MARE.
+	 * @param wallet the address with no $MARE
+	 */
+	error NeedsMoreMARE(address wallet);
 
 	/**
 	 * @notice Thrown when the account does not exist
@@ -92,8 +104,12 @@ interface IMarebitsLocker is IOwnershipTransferrable, IRecoverable {
 	/** @notice Thrown when a zero amount is passed */
 	error ZeroAmountGiven();
 
-	/** @return IMarebitsLockerAccount associated with this {IMarebitsLocker} */
-	function accounts() external view returns (IMarebitsLockerAccount);
+	/**
+	 * @notice Internally marks a token as having been burnt
+	 * @dev Only callable by the {Ownable.owner} of this contract
+	 * @param accountId representing the account being burned
+	 */
+	function __burn(uint256 accountId) external;
 
 	/**
 	 * @notice Extends the `unlockTime` for a given `accountId`
@@ -104,8 +120,12 @@ interface IMarebitsLocker is IOwnershipTransferrable, IRecoverable {
 	 */
 	function extendLock(uint256 accountId, uint64 unlockTime) external returns (uint256);
 
-	/** @return IMarebitsLockerToken associated with this {IMarebitsLocker} */
-	function lockerToken() external view returns (IMarebitsLockerToken);
+	/**
+	 * @notice Gets the account details for the account `accountId`
+	 * @param accountId (also `tokenId`) representing the locked account
+	 * @return Account.Info representing `accountId`; see {Account.Info}
+	 */
+	function getAccount(uint256 accountId) external view returns (Account.Info memory);
 
 	/**
 	 * @notice Locks tokens in a Mare Bits Locker and issues a redeemable Mare Bits Locker Token that can be used to unlock the tokens after the time `unlockTime` has passed
@@ -125,7 +145,4 @@ interface IMarebitsLocker is IOwnershipTransferrable, IRecoverable {
 	 * @param accountId (also `tokenId`) representing the locked account
 	 */
 	function redeemToken(uint256 accountId) external;
-
-	/** @return IMarebitsVault associated with this {IMarebitsLocker} */
-	function vault() external view returns (IMarebitsVault);
 }

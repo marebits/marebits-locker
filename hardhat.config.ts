@@ -8,9 +8,7 @@ import * as Secrets from "./secrets.json";
 
 const config: HardhatUserConfig = {
 	namedAccounts: {
-		deployer: {
-			default: 0
-		}
+		deployer: 0
 	}, 
 	networks: {
 		// ganache: {}, 

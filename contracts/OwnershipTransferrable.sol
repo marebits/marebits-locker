@@ -6,9 +6,6 @@ import "./Ownable.sol";
 import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 
 abstract contract OwnershipTransferrable is Ownable, IOwnershipTransferrable {
-	/// @inheritdoc IOwnershipTransferrable
-	function renounceOwnership() public virtual onlyOwner { _transferOwnership(address(0)); }
-
 	/**
 	* @dev Implementation of the {IERC165} interface.
 	* @inheritdoc ERC165
@@ -19,10 +16,5 @@ abstract contract OwnershipTransferrable is Ownable, IOwnershipTransferrable {
 	}
 
 	/// @inheritdoc IOwnershipTransferrable
-	function transferOwnership(address newOwner) public virtual onlyOwner {
-		if (newOwner == address(0)) {
-			revert OwnerCannotBeZero();
-		}
-		_transferOwnership(newOwner);
-	}
+	function transferOwnership(address newOwner) public virtual onlyOwner { _transferOwnership(newOwner); }
 }

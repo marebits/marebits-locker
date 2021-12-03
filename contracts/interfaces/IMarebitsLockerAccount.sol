@@ -11,27 +11,10 @@ import "./IRecoverable.sol";
  */
 interface IMarebitsLockerAccount is IRecoverable {
 	/**
-	 * @notice Thrown when an invalid amount is entered
-	 * @param reason amount is invalid
-	 */
-	error InvalidAmount(string reason);
-
-	/**
 	 * @notice Thrown when the account does not exist
 	 * @param accountId of the account that does not exists
 	 */
 	error NonexistentAccount(uint256 accountId);
-
-	/**
-	 * @notice Thrown when a passed time value is out of the stated bounds
-	 * @param given time (in seconds since UNIX epoch)
-	 * @param minimum time bound (in seconds since UNIX epoch)
-	 * @param maximum time bound (in seconds since UNIX epoch)
-	 */
-	error TimeOutOfBounds(uint64 given, uint64 minimum, uint64 maximum);
-
-	/** @notice Thrown when a zero amount is passed */
-	error ZeroAmountGiven();
 
 	/**
 	 * @notice Internally marks a token as having been burnt by setting the `isBurned` flag in the {IMarebitsLockerAccount.Account}
@@ -65,7 +48,7 @@ interface IMarebitsLockerAccount is IRecoverable {
 	 * @param accountId representing the account
 	 * @param amount new amount of tokens to be locked
 	 */
-	function __setAmount(uint256 accountId, uint256 amount) external;
+	// function __setAmount(uint256 accountId, uint256 amount) external;
 
 	/**
 	 * @notice Updates the unlock time of tokens locked in this account to `unlockTime`; called by {IMarebitsLocker.extendLock}
@@ -86,41 +69,41 @@ interface IMarebitsLockerAccount is IRecoverable {
 	 * @param accountId (also `tokenId`) representing the locked account
 	 * @return uint256 amount of tokens locked in the account `accountId`
 	 */
-	function getAmount(uint256 accountId) external view returns (uint256);
+	// function getAmount(uint256 accountId) external view returns (uint256);
 
 	/**
 	 * @param accountId (also `tokenId`) representing the locked account
 	 * @return address token contract address for the tokens locked in the account `accountId`
 	 */
-	function getTokenContract(uint256 accountId) external view returns (address);
+	// function getTokenContract(uint256 accountId) external view returns (address);
 
 	/**
 	 * @param accountId (also `tokenId`) representing the locked account
 	 * @return Token.Type type of tokens locked in the account `accountId`; see {Token.Type}
 	 */
-	function getTokenType(uint256 accountId) external view returns (Token.Type);
+	// function getTokenType(uint256 accountId) external view returns (Token.Type);
 
 	/**
 	 * @param accountId (also `tokenId`) representing the locked account
 	 * @return uint256 token ID of the tokens locked in the account `accountId`
 	 */
-	function getTokenId(uint256 accountId) external view returns (uint256);
+	// function getTokenId(uint256 accountId) external view returns (uint256);
 
 	/**
 	 * @param accountId (also `tokenId`) representing the locked account
 	 * @return uint256 time after which tokens locked in the account `accountId` can be withdrawn (in seconds after UNIX epoch)
 	 */
-	function getUnlockTime(uint256 accountId) external view returns (uint64);
+	// function getUnlockTime(uint256 accountId) external view returns (uint64);
 
 	/**
 	 * @param accountId (also `tokenId`) representing the locked account
 	 * @return bool true if the account exists; otherwise, false
 	 */
-	function hasAccount(uint256 accountId) external view returns (bool);
+	// function hasAccount(uint256 accountId) external view returns (bool);
 
 	/**
 	 * @param accountId (also `tokenId`) representing the locked account
 	 * @return bool true if the `unlockTime` has expired for the account `accountId`; otherwise, false
 	 */
-	function isUnlocked(uint256 accountId) external view returns (bool);
+	// function isUnlocked(uint256 accountId) external view returns (bool);
 }

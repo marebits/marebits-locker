@@ -77,19 +77,7 @@ interface IMarebitsLockerToken is IERC721Metadata, IRecoverable {
 	 * @param tokenId of the token for which you want the image URI
 	 * @return imageUri string token image URI
 	 */
-	function imageURI(uint256 tokenId) external view returns (string memory imageUri);
-
-	/**
-	 * @notice Sets the image for the token `tokenId` to `imageUri`
-	 * @dev Only callable by the {Ownable.Owner} of this contract's owner
-	 */
-	function setImageURI(uint256 tokenId, string memory imageUri) external;
-
-	/**
-	 * @notice Sets the URI for the token `tokenId` to `tokenUri`
-	 * @dev Only callable by the {Ownable.Owner} of this contract's owner
-	 */
-	function setTokenURI(uint256 tokenId, string memory tokenUri) external;
+	// function imageURI(uint256 tokenId) external view returns (string memory imageUri);
 
 	/**
 	 * @notice Returns the URI for the token ID `tokenId`
@@ -97,5 +85,5 @@ interface IMarebitsLockerToken is IERC721Metadata, IRecoverable {
 	 * @param tokenId of the token for which to retreive metadata
 	 * @return string metadata for the token
 	 */
-	function uri(uint256 tokenId) external view returns (string memory);
+	// function uri(uint256 tokenId) external view returns (string memory);
 }

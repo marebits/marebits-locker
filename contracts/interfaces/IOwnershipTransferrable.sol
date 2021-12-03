@@ -8,14 +8,11 @@ import "./IOwnable.sol";
  * @dev Represents the [ERC-173](https://eips.ethereum.org/EIPS/eip-173) specification (and a little more)
  */
 interface IOwnershipTransferrable is IOwnable {
-	/// @notice Thrown when `transferOwnership()` is called with a 0 address
-	error OwnerCannotBeZero();
-
 	/**
 	 * @notice Leaves the contract without owner.  It will not be possible to call `onlyOwner` functions anymore.
 	 * @dev Can only be called by the current owner.
 	 */
-	function renounceOwnership() external;
+	// function renounceOwnership() external;
 
 	/**
 	 * @notice Transfers ownership of the contract to a new account (`newAccount`).

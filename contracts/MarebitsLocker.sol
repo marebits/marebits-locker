@@ -33,17 +33,20 @@ contract MarebitsLocker is OwnershipTransferrable, Recoverable, KnowsBestPony, R
 	using SafeERC20 for IERC20;
 	using Token for Token.Type;
 
-	/** @dev the maximum value for time (uint64) */
+	/** @dev the maximum value for time */
 	uint64 private constant MAXIMUM_TIME = (2 << 63) - 1;
 
-	/// @inheritdoc IMarebitsLocker
+	/// @dev {IMarebitsLockerAccount} associated with this {IMarebitsLocker}
 	IMarebitsLockerAccount public immutable accounts;
 
-	/// @inheritdoc IMarebitsLocker
-	IMarebitsLockerToken public immutable lockerToken;
+	/// @dev {IMarebitsLockerToken} associated with this {IMarebitsLocker}
+	IMarebitsLockerToken private immutable lockerToken;
 
-	/// @inheritdoc IMarebitsLocker
-	IMarebitsVault public immutable vault;
+	/** @dev Address of the Mare Bits Token contract */
+	IERC20 private immutable mareBitsToken;
+
+	/// @dev {IMarebitsVault} associated with this {IMarebitsLocker}
+	IMarebitsVault private immutable vault;
 
 	/**
 	 * @dev Must pass a non-zero amount
@@ -71,19 +74,36 @@ contract MarebitsLocker is OwnershipTransferrable, Recoverable, KnowsBestPony, R
 		_;
 	}
 
+	/** @dev Caller must have $MARE to interact with this locker */
+	modifier mareHodlerOnly() {
+		if (mareBitsToken.balanceOf(_msgSender()) == 0) {
+			revert NeedsMoreMARE(_msgSender());
+		}
+		_;
+	}
+
 	/**
 	 * @param name of the {MarebitsLockerToken}
 	 * @param symbol of the {MarebitsLockerToken}
 	 * @param baseURI initially set for the {MarebitsLockerToken}
 	 */
-	constructor(string memory name, string memory symbol, string memory baseURI) {
+	constructor(string memory name, string memory symbol, string memory baseURI, IERC20 mareBitsToken_) {
 		accounts = new MarebitsLockerAccount();
 		lockerToken = new MarebitsLockerToken(name, symbol, baseURI);
+		mareBitsToken = mareBitsToken_;
 		vault = new MarebitsVault();
 	}
 
 	/** @notice In the case of child contracts somehow receiving ether, this lets us recover it from them.  Do not send ether to any of these contracts, please! */
 	receive() external payable {}
+
+	/// @inheritdoc IMarebitsLocker
+	function __burn(uint256 accountId) external {
+		if (_msgSender() != address(lockerToken)) {
+			revert InvalidCaller();
+		}
+		accounts.__burn(accountId);
+	}
 
 	/**
 	 * @notice Recovers ether accidentally sent to this contract or the contracts owned by this one ({MarebitsLockerAccount}, {MarebitsLockerToken}, and {MarebitsVault})
@@ -185,6 +205,9 @@ contract MarebitsLocker is OwnershipTransferrable, Recoverable, KnowsBestPony, R
 	 * @return accountId for the newly created account
 	 */
 	function _createAccount(uint256 amount, address tokenContract, uint256 tokenId, Token.Type tokenType, uint64 unlockTime) private returns (uint256 accountId) {
+		if (tokenType == Token.Type.ERC721 && amount > 1) {
+			revert InvalidAmount("`amount` must be 1 for ERC721");
+		}
 		accountId = lockerToken.__getNextTokenId();
 		accounts.__createAccount(accountId, amount, tokenContract, tokenId, tokenType, unlockTime);
 	}
@@ -245,17 +268,21 @@ contract MarebitsLocker is OwnershipTransferrable, Recoverable, KnowsBestPony, R
 	}
 
 	/// @inheritdoc IMarebitsLocker
-	function extendLock(uint256 accountId, uint64 unlockTime) external onlyHuman returns (uint256) {
+	function extendLock(uint256 accountId, uint64 unlockTime) external nonReentrant onlyHuman mareHodlerOnly returns (uint256) {
 		_checkAccountExists(accountId);
 		_checkOwner(accountId, _msgSender(), lockerToken.ownerOf(accountId));
-		_checkTimeBounds(unlockTime, accounts.getUnlockTime(accountId), MAXIMUM_TIME);
+		Account.Info memory account = accounts.getAccount(accountId);
+		_checkTimeBounds(unlockTime, account.unlockTime, MAXIMUM_TIME);
 		accounts.__setUnlockTime(accountId, unlockTime);
-		emit TokensLocked(accountId, _msgSender(), accounts.getAmount(accountId), accounts.getTokenContract(accountId), accounts.getTokenId(accountId), accounts.getTokenType(accountId), unlockTime);
+		emit TokensLocked(accountId, _msgSender(), account.amount, account.tokenContract, account.tokenId, account.tokenType, unlockTime);
 		return accountId;
 	}
 
 	/// @inheritdoc IMarebitsLocker
-	function lockTokens(Token.Type tokenType, address tokenContract, uint256 tokenId, uint256 amount, uint64 unlockTime) external nonReentrant onlyHuman returns (uint256) {
+	function getAccount(uint256 accountId) external view returns (Account.Info memory) { return accounts.getAccount(accountId); }
+
+	/// @inheritdoc IMarebitsLocker
+	function lockTokens(Token.Type tokenType, address tokenContract, uint256 tokenId, uint256 amount, uint64 unlockTime) external nonReentrant onlyHuman mareHodlerOnly returns (uint256) {
 		_checkTokenType(tokenType);
 		_checkTimeBounds(unlockTime, uint64(block.timestamp), MAXIMUM_TIME);
 
@@ -271,17 +298,19 @@ contract MarebitsLocker is OwnershipTransferrable, Recoverable, KnowsBestPony, R
 	}
 
 	/// @inheritdoc IMarebitsLocker
-	function redeemToken(uint256 accountId) external nonReentrant onlyHuman {
-		if (!accounts.isUnlocked(accountId)) {
-			revert LockedAccount(accounts.getUnlockTime(accountId), uint64(block.timestamp));
+	function redeemToken(uint256 accountId) external nonReentrant onlyHuman mareHodlerOnly {
+		Account.Info memory account = accounts.getAccount(accountId);
+
+		if (uint256(account.unlockTime) > block.timestamp) {
+			revert LockedAccount(account.unlockTime, uint64(block.timestamp));
 		}
 		_checkAccountExists(accountId);
 		_checkOwner(accountId, _msgSender(), lockerToken.ownerOf(accountId));
-		_checkSufficientBalance(1, accounts.getAmount(accountId));
+		_checkSufficientBalance(1, account.amount);
 		accounts.__redeem(accountId);
 		lockerToken.__burn(accountId);
-		vault.__transfer(accounts.getTokenType(accountId), accounts.getTokenContract(accountId), payable(_msgSender()), accounts.getTokenId(accountId), accounts.getAmount(accountId));
-		emit TokenRedeemed(accountId, _msgSender(), accounts.getAmount(accountId), accounts.getTokenContract(accountId), accounts.getTokenId(accountId), accounts.getTokenType(accountId));
+		vault.__transfer(account.tokenType, account.tokenContract, payable(_msgSender()), account.tokenId, account.amount);
+		emit TokenRedeemed(accountId, _msgSender(), account.amount, account.tokenContract, account.tokenId, account.tokenType);
 	}
 
 	/**
