@@ -9,11 +9,17 @@ This should work for all tokens that implement either the [ERC20](https://eips.e
 ## Deployment
 Here are the deployed contract addresses:
 
-* Mainnet:
+* Ethereum:
   - Mare Bits Locker: (TBD)
   - Mare Bits Locker Account: (TBD)
   - Mare Bits Locker Token: (TBD)
   - Mare Bits Vault: (TBD)
+
+* Polygon:
+  - Mare Bits Locker: [0xdFcB170bEa5b1B970574b8cCd0347A095256c4A8](https://polygonscan.com/address/0xdFcB170bEa5b1B970574b8cCd0347A095256c4A8)
+  - Mare Bits Locker Account: [0x7c20bfda6ba2cd5ca85b952696e279a2efcd5ff2](https://polygonscan.com/address/0x7c20bfda6ba2cd5ca85b952696e279a2efcd5ff2)
+  - Mare Bits Locker Token: [0xc12d120e3973e7bac07e1802ca0ea30676451642](https://polygonscan.com/address/0xc12d120e3973e7bac07e1802ca0ea30676451642)
+  - Mare Bits Vault: [0x3d41144b7236fb2119c52546d6f5df15c0c316a8](https://polygonscan.com/address/0x3d41144b7236fb2119c52546d6f5df15c0c316a8)
 
 * Ropsten (test network):
   - Mare Bits Locker: (TBD)
@@ -38,6 +44,3 @@ Interaction will primarily be with the Mare Bits Locker, Mare Bits Locker Accoun
 
 ### Mare Bits Vault
 (TBD)
-
-Term
-: Definition
