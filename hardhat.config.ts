@@ -7,6 +7,7 @@ import "hardhat-deploy";
 import * as Secrets from "./secrets.json";
 
 const config: HardhatUserConfig = {
+	etherscan: { apiKey: Secrets.POLYGONSCAN_API_KEY }, 
 	namedAccounts: {
 		deployer: 0
 	}, 
@@ -24,9 +25,40 @@ const config: HardhatUserConfig = {
 		ropsten: {
 			accounts: { mnemonic: Secrets.WALLET_MNEMONIC }, 
 			chainId: 3, 
+			// deploy: ["deploy", "deploy-test-tokens"], 
+			gas: 2100000, 
 			gasMultiplier: 4, 
+			gasPrice: 8000000000, 
 			timeout: 1000000, 
-			url: Secrets.ALCHEMY_API_KEY
+			url: Secrets.ALCHEMY_API_KEY_ROPSTEN
+		}, 
+		polygon: {
+			accounts: { mnemonic: Secrets.WALLET_MNEMONIC }, 
+			chainId: 137, 
+			gas: 50000000, 
+			gasMultiplier: 6, 
+			gasPrice: 8000000000, 
+			timeout: 1000000, 
+			url: Secrets.ALCHEMY_API_KEY_POLYGON
+		}, 
+		ganache: {
+			accounts: { mnemonic: Secrets.WALLET_MNEMONIC }, 
+			chainId: 1337, 
+			deploy: ["deploy", "deploy-test-tokens"], 
+			gas: 50000000, 
+			gasMultiplier: 6, 
+			gasPrice: 8000000000, 
+			timeout: 1000000, 
+			url: "http://127.0.0.1:7545"
+		}, 
+		mumbai: {
+			accounts: { mnemonic: Secrets.WALLET_MNEMONIC }, 
+			chainId: 80001, 
+			gas: 50000000, 
+			gasMultiplier: 6, 
+			gasPrice: 8000000000, 
+			timeout: 1000000, 
+			url: Secrets.ALCHEMY_API_KEY_MUMBAI
 		}
 	}, 
 	solidity: {

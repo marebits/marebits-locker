@@ -40,13 +40,13 @@ contract MarebitsLocker is OwnershipTransferrable, Recoverable, KnowsBestPony, R
 	IMarebitsLockerAccount public immutable accounts;
 
 	/// @dev {IMarebitsLockerToken} associated with this {IMarebitsLocker}
-	IMarebitsLockerToken private immutable lockerToken;
+	IMarebitsLockerToken public immutable lockerToken;
 
 	/** @dev Address of the Mare Bits Token contract */
-	IERC20 private immutable mareBitsToken;
+	IERC20 public immutable mareBitsToken;
 
 	/// @dev {IMarebitsVault} associated with this {IMarebitsLocker}
-	IMarebitsVault private immutable vault;
+	IMarebitsVault public immutable vault;
 
 	/**
 	 * @dev Must pass a non-zero amount
@@ -76,7 +76,7 @@ contract MarebitsLocker is OwnershipTransferrable, Recoverable, KnowsBestPony, R
 
 	/** @dev Caller must have $MARE to interact with this locker */
 	modifier mareHodlerOnly() {
-		if (mareBitsToken.balanceOf(_msgSender()) == 0) {
+		if (address(mareBitsToken) != address(0) && mareBitsToken.balanceOf(_msgSender()) == 0) {
 			revert NeedsMoreMARE(_msgSender());
 		}
 		_;

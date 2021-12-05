@@ -4,11 +4,15 @@
 	"description": "A way to lock-up your ERC20, ERC721, or ERC1155 tokens and keep them safe from that waifu thief Brad.  Issues an ERC721 token that can be used to unlock your tokens after the unlock date has passed.",
 	"main": "",
 	"scripts": {
-		"build": "bin/build", 
+		"build": "bin/build",
 		"compile": "npx hardhat compile",
 		"console": "npx hardhat console --network localhost",
-		"deploy": "npx hardhat deploy --export abi/MarebitsLocker.json --network localhost",
-		"deploy-ropsten": "export NODE_OPTIONS=--openssl-legacy-provider && npx hardhat deploy --export abi/MarebitsLocker.json --network ropsten", 
+		"deploy": "npx hardhat deploy --network localhost",
+		"deploy-ganache": "cd ../marebits-ethereum && npx truffle deploy --network ganache && cd ../marebits-locker && npx hardhat deploy --network ganache --reset",
+		"deploy-mumbai": "export NODE_OPTIONS=--openssl-legacy-provider && npx hardhat deploy --export abi/MarebitsLocker-mumbai.json --reset --network mumbai",
+		"deploy-polygon": "export NODE_OPTIONS=--openssl-legacy-provider && npx hardhat deploy --export abi/MarebitsLocker.json --network polygon",
+		"deploy-ropsten": "export NODE_OPTIONS=--openssl-legacy-provider && npx hardhat deploy --export abi/MarebitsLocker-ropsten.json --reset --network ropsten",
+		"etherscan-verify": "npx hardhat etherscan-verify --license None --force-license --sleep --network ropsten",
 		"github": "git commit -a && git push origin master",
 		"node": "npx hardhat node --no-deploy --network hardhat"
 	},
@@ -17,6 +21,7 @@
 	"devDependencies": {
 		"@nomiclabs/hardhat-ethers": "^2.0.2",
 		"@openzeppelin/contracts": "^4.3.3",
+		"@openzeppelin/contracts-upgradeable": "^4.4.0",
 		"@types/chai": "^4.2.22",
 		"@types/mocha": "^9.0.0",
 		"@types/node": "^16.11.9",
@@ -24,6 +29,7 @@
 		"ethers": "^5.5.1",
 		"hardhat": "^2.6.8",
 		"hardhat-deploy": "^0.9.10",
+		"marebits": "github:marebits/marebits-ethereum",
 		"ts-node": "^10.4.0",
 		"typescript": "^4.5.2"
 	}
