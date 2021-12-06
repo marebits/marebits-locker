@@ -58,7 +58,7 @@ Interaction will primarily be with the Mare Bits Locker, Mare Bits Locker Accoun
 <dd>Redeems the token for the account <code>accountId</code>, returning the locked tokens to the owner of <code>accountId</code>.  This will throw a <code>TimeOutOfBounds</code> error if attempted before <code>unlockTime</code> has expired.  Emits the <code>TokenRedeemed</code> event when successful.</dd>
 
 <dt><code>supportsInterface(bytes4 interfaceId) returns (bool)</code></dt>
-<dd>See [ERC-165](https://eips.ethereum.org/EIPS/eip-165#how-a-contract-will-publish-the-interfaces-it-implements).</dd>
+<dd>See <a href="https://eips.ethereum.org/EIPS/eip-165#how-a-contract-will-publish-the-interfaces-it-implements">ERC-165</a>.</dd>
 
 <dt><code>vault() returns (IMarebitsVault)</code></dt>
 <dd>Returns the address associated with the Mare Bits Vault contract.</dd>
@@ -155,7 +155,7 @@ Interaction will primarily be with the Mare Bits Locker, Mare Bits Locker Accoun
 <dd>Returns the account details for the account <code>accountId</code>.  These details include the <code>accountId</code>, the <code>amount</code> of tokens locked, the <code>tokenId</code> of the token locked, the <code>tokenContract</code> address, the <code>tokenType</code> locked, the <code>unlockTime</code>, whether or not the locker token <code>isBurned</code>, and whether or not the locker token <code>isRedeemed</code>.</dd>
 
 <dt><code>supportsInterface(bytes4 interfaceId) returns (bool)</code></dt>
-<dd>See [ERC-165](https://eips.ethereum.org/EIPS/eip-165#how-a-contract-will-publish-the-interfaces-it-implements).</dd>
+<dd>See <a href="https://eips.ethereum.org/EIPS/eip-165#how-a-contract-will-publish-the-interfaces-it-implements">ERC-165</a>.</dd>
 </dl>
 
 #### Errors
@@ -170,7 +170,7 @@ This contract represents the ERC-721 token issued when tokens are locked.  As su
 #### Functions
 <dl>
 <dt><code>approve(address to, uint256 tokenId)</code></dt>
-<dd>Gives permission to <code>to</code> to transfer token <code>tokenId</code> to another account.  The approval is cleared when the token is transferred.  Only a single account can be approved at a time, so approving the [zero address](https://etherscan.io/address/0x0000000000000000000000000000000000000000) clears previous approvals.  Emits an <code>Approval</code> event when successful.</dd>
+<dd>Gives permission to <code>to</code> to transfer token <code>tokenId</code> to another account.  The approval is cleared when the token is transferred.  Only a single account can be approved at a time, so approving the <a href="https://etherscan.io/address/0x0000000000000000000000000000000000000000">zero address</a> clears previous approvals.  Emits an <code>Approval</code> event when successful.</dd>
 
 <dt><code>balanceOf(address owner) returns (uint256)</code></dt>
 <dd>Returns the number of Mare Bits Locker tokens held by address <code>owner</code>.</dd>
@@ -179,7 +179,7 @@ This contract represents the ERC-721 token issued when tokens are locked.  As su
 <dd>Returns the best pony.</dd>
 
 <dt><code>burn(uint256 tokenId)</code></dt>
-<dd>Can only be called by the owner of the token <code>tokenId</code> or someone the owner has approved.  This will burn the locker token, in effect sending it to the [zero address](https://etherscan.io/address/0x0000000000000000000000000000000000000000).  If this is called, the token will disappear and any tokens locked in the locker will be unredeemable!  Emits a <code>Transfer</code> event when successful.</dd>
+<dd>Can only be called by the owner of the token <code>tokenId</code> or someone the owner has approved.  This will burn the locker token, in effect sending it to the <a href="https://etherscan.io/address/0x0000000000000000000000000000000000000000">zero address</a>.  If this is called, the token will disappear and any tokens locked in the locker will be unredeemable!  Emits a <code>Transfer</code> event when successful.</dd>
 
 <dt><code>getApproved(uint256 tokenId) returns (address)</code></dt>
 <dd>Returns the account approved to transfer token <code>tokenId</code>.</dd>
@@ -200,7 +200,7 @@ This contract represents the ERC-721 token issued when tokens are locked.  As su
 <dd>Approve or remove <code>operator</code> as an operator for the caller.  Operators can call <code>transferFrom</code> or <code>safeTransferFrom</code> for any token owned by the caller.  Emits an <code>ApprovalForAll</code> event when successful.</dd>
 
 <dt><code>supportsInterface(bytes4 interfaceId) returns (bool)</code></dt>
-<dd>See [ERC-165](https://eips.ethereum.org/EIPS/eip-165#how-a-contract-will-publish-the-interfaces-it-implements).</dd>
+<dd>See <a href="https://eips.ethereum.org/EIPS/eip-165#how-a-contract-will-publish-the-interfaces-it-implements">ERC-165</a>.</dd>
 
 <dt><code>symbol() returns (string)</code></dt>
 <dd>Returns the general symbol of this token (🐎‍♀️🔒🪙).</dd>
@@ -261,5 +261,5 @@ This contract represents the ERC-721 token issued when tokens are locked.  As su
 <dd>Whenever an ERC-721 <code>tokenId</code> is transferred to this contract via <code>safeTransferFrom</code> by <code>operator</code> from <code>from</code>, this function is called.  It returns its Solidity selector to confirm the token transfer.</dd>
 
 <dt><code>supportsInterface(bytes4 interfaceId) returns (bool)</code></dt>
-<dd>See [ERC-165](https://eips.ethereum.org/EIPS/eip-165#how-a-contract-will-publish-the-interfaces-it-implements).</dd>
+<dd>See <a href="https://eips.ethereum.org/EIPS/eip-165#how-a-contract-will-publish-the-interfaces-it-implements">ERC-165</a>.</dd>
 </dl>
