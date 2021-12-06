@@ -9,7 +9,7 @@ This should work for all tokens that implement either the [ERC20](https://eips.e
 In order to use the Mare Bits Locker, your wallet must have a $MARE balance greater than zero.
 
 ## Deployment
-Here are the deployed contract addresses:
+Here are the deployed contract addresses.  Please note, Etherscan/Polygonscan make interacting with verified contracts *very easy* and all of these are verified.  Click the link below, then click on Read Contract to get data and Write Contract to execute functions that modify the block chain (you will need a wallet like [Metamask](https://metamask.io/) if you are using the Write Contract functions).
 
 * Ethereum:
   - Mare Bits Locker: (TBD)
@@ -18,17 +18,17 @@ Here are the deployed contract addresses:
   - Mare Bits Vault: (TBD)
 
 * Polygon:
-  - Mare Bits Locker: [0xdFcB170bEa5b1B970574b8cCd0347A095256c4A8](https://polygonscan.com/address/0xdFcB170bEa5b1B970574b8cCd0347A095256c4A8 "View on Polygonscan")
-  - Mare Bits Locker Account: [0x7c20bfda6ba2cd5ca85b952696e279a2efcd5ff2](https://polygonscan.com/address/0x7c20bfda6ba2cd5ca85b952696e279a2efcd5ff2 "View on Polygonscan")
-  - Mare Bits Locker Token: [0xc12d120e3973e7bac07e1802ca0ea30676451642](https://polygonscan.com/address/0xc12d120e3973e7bac07e1802ca0ea30676451642 "View on Polygonscan")
-  - Mare Bits Vault: [0x3d41144b7236fb2119c52546d6f5df15c0c316a8](https://polygonscan.com/address/0x3d41144b7236fb2119c52546d6f5df15c0c316a8 "View on Polygonscan")
+  - Mare Bits Locker: [0xdFcB170bEa5b1B970574b8cCd0347A095256c4A8](https://polygonscan.com/address/0xdFcB170bEa5b1B970574b8cCd0347A095256c4A8#code "View on Polygonscan")
+  - Mare Bits Locker Account: [0x7c20bfda6ba2cd5ca85b952696e279a2efcd5ff2](https://polygonscan.com/address/0x7c20bfda6ba2cd5ca85b952696e279a2efcd5ff2#code "View on Polygonscan")
+  - Mare Bits Locker Token: [0xc12d120e3973e7bac07e1802ca0ea30676451642](https://polygonscan.com/address/0xc12d120e3973e7bac07e1802ca0ea30676451642#code "View on Polygonscan")
+  - Mare Bits Vault: [0x3d41144b7236fb2119c52546d6f5df15c0c316a8](https://polygonscan.com/address/0x3d41144b7236fb2119c52546d6f5df15c0c316a8#code "View on Polygonscan")
 
 * Ropsten (test network):
-  - Mare Bits Locker: [0xe8fFc80a8D5c07Eb9Cd52AbF1a081b588d663414](https://ropsten.etherscan.io/address/0xe8fFc80a8D5c07Eb9Cd52AbF1a081b588d663414 "View on Etherscan")
-  - Mare Bits Locker Account: [0xfc0c341d8522f896e569bce3641a873ae8dbe506](https://ropsten.etherscan.io/address/0xfc0c341d8522f896e569bce3641a873ae8dbe506 "View on Etherscan")
-  - Mare Bits Locker Token: [0x78910d0a3b750462e82699a40afec7c10332ec5c](https://ropsten.etherscan.io/address/0x78910d0a3b750462e82699a40afec7c10332ec5c "View on Etherscan")
-  - Mare Bits Vault: [0x1ef0433cc1646451b038617b9963f2afa6428cc1 ](https://ropsten.etherscan.io/address/0x1ef0433cc1646451b038617b9963f2afa6428cc1 "View on Etherscan")
-  
+  - Mare Bits Locker: [0xe8fFc80a8D5c07Eb9Cd52AbF1a081b588d663414](https://ropsten.etherscan.io/address/0xe8fFc80a8D5c07Eb9Cd52AbF1a081b588d663414#code "View on Etherscan")
+  - Mare Bits Locker Account: [0xfc0c341d8522f896e569bce3641a873ae8dbe506](https://ropsten.etherscan.io/address/0xfc0c341d8522f896e569bce3641a873ae8dbe506#code "View on Etherscan")
+  - Mare Bits Locker Token: [0x78910d0a3b750462e82699a40afec7c10332ec5c](https://ropsten.etherscan.io/address/0x78910d0a3b750462e82699a40afec7c10332ec5c#code "View on Etherscan")
+  - Mare Bits Vault: [0x1ef0433cc1646451b038617b9963f2afa6428cc1 ](https://ropsten.etherscan.io/address/0x1ef0433cc1646451b038617b9963f2afa6428cc1#code "View on Etherscan")
+
 (If you wish to use the Ropsten contract and need $MARE, please send your wallet address to <iwtcits@mare.biz> and I will send you some.)
 
 ## Using the deployed contracts
