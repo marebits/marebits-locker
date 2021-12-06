@@ -9,7 +9,7 @@ This should work for all tokens that implement either the [ERC20](https://eips.e
 In order to use the Mare Bits Locker, your wallet must have a $MARE balance greater than zero.
 
 ## Deployment
-Here are the deployed contract addresses.  Please note, Etherscan/Polygonscan make interacting with verified contracts *very easy* and all of these are verified.  Click the link below, then click on Read Contract to get data and Write Contract to execute functions that modify the block chain (you will need a wallet like [Metamask](https://metamask.io/) if you are using the Write Contract functions).
+Here are the deployed contract addresses.  Please note, Etherscan/Polygonscan make interacting with verified contracts *very easy* and all of these are verified.  Click the link below, then click on `Read Contract` to get data and `Write Contract` to execute functions that modify the block chain (you will need a wallet like [Metamask](https://metamask.io/) if you are using the `Write Contract` functions).
 
 * Ethereum:
   - Mare Bits Locker: (TBD)
