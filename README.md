@@ -28,6 +28,7 @@ Here are the deployed contract addresses:
   - Mare Bits Locker Account: [0xfc0c341d8522f896e569bce3641a873ae8dbe506](https://ropsten.etherscan.io/address/0xfc0c341d8522f896e569bce3641a873ae8dbe506 "View on Etherscan")
   - Mare Bits Locker Token: [0x78910d0a3b750462e82699a40afec7c10332ec5c](https://ropsten.etherscan.io/address/0x78910d0a3b750462e82699a40afec7c10332ec5c "View on Etherscan")
   - Mare Bits Vault: [0x1ef0433cc1646451b038617b9963f2afa6428cc1 ](https://ropsten.etherscan.io/address/0x1ef0433cc1646451b038617b9963f2afa6428cc1 "View on Etherscan")
+  
 (If you wish to use the Ropsten contract and need $MARE, please send your wallet address to <iwtcits@mare.biz> and I will send you some.)
 
 ## Using the deployed contracts
