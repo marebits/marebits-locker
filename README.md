@@ -33,43 +33,43 @@ Interaction will primarily be with the Mare Bits Locker, Mare Bits Locker Accoun
 ### Mare Bits Locker
 #### Functions
 <dl>
-<dt><code>accounts() returns (IMarebitsLockerAccount)</code></dt>
+<dt><code style="font-family: monospace; font-style: unset">accounts() returns (IMarebitsLockerAccount)</code></dt>
 <dd>Returns the address associated with the Mare Bits Locker Account contract.</dd>
 
-<dt><code>bestPony() returns (string)</code></dt>
+<dt><code style="font-family: monospace; font-style: unset">bestPony() returns (string)</code></dt>
 <dd>Returns the best pony.</dd>
 
-<dt><code>extendLock(uint256 accountId, uint64 unlockTime) returns (uint256)</code></dt>
+<dt><code style="font-family: monospace; font-style: unset">extendLock(uint256 accountId, uint64 unlockTime) returns (uint256)</code></dt>
 <dd>Sets the lock time for account `accountId` to `unlockTime` (in seconds since UNIX epoch).  The new unlock time must be greater than the existing unlock time for the account (will throw `TimeOutOfBounds` if not).  Emits the `TokensLocked` event and returns the `accountId` when successful.</dd>
 
-<dt><code>getAccount(uint256 accountId) returns (Account.Info)</code></dt>
+<dt><code style="font-family: monospace; font-style: unset">getAccount(uint256 accountId) returns (Account.Info)</code></dt>
 <dd>Returns the account details for the account `accountId`.  These details include the `accountId`, the `amount` of tokens locked, the `tokenId` of the token locked, the `tokenContract` address, the `tokenType` locked, the `unlockTime`, whether or not the locker token `isBurned`, and whether or not the locker token `isRedeemed`.</dd>
 
-<dt><code>lockerToken() returns (IMarebitsLockerToken)</code></dt>
+<dt><code style="font-family: monospace; font-style: unset">lockerToken() returns (IMarebitsLockerToken)</code></dt>
 <dd>Returns the address associated with the Mare Bits Locker Token contract.</dd>
 
-<dt><code>lockTokens(Token.Type tokenType, address tokenContract, uint256 tokenId, uint256 amount, uint64 unlockTime) returns (uint256)</code></dt>
+<dt><code style="font-family: monospace; font-style: unset">lockTokens(Token.Type tokenType, address tokenContract, uint256 tokenId, uint256 amount, uint64 unlockTime) returns (uint256)</code></dt>
 <dd>Locks `amount` tokens of the `tokenType` token deployed at the `tokenContract` address with the token ID `tokenId` for a period represented by `unlockTime` (in seconds since UNIX epoch).  The `tokenId` is ignored for ERC-20 tokens and the `amount` must be `1` for ERC-721 tokens.  Emits the `TokensLocked` event and returns the newly created `accountId` when successful.</dd>
 
-<dt><code>mareBitsToken() returns (IERC20)</code></dt>
+<dt><code style="font-family: monospace; font-style: unset">mareBitsToken() returns (IERC20)</code></dt>
 <dd>Returns the address associated with the Mare Bits token contract.  (This function is private in the Polygon contract.)</dd>
 
-<dt><code>redeemToken(uint256 accountId)</code></dt>
+<dt><code style="font-family: monospace; font-style: unset">redeemToken(uint256 accountId)</code></dt>
 <dd>Redeems the token for the account `accountId`, returning the locked tokens to the owner of `accountId`.  This will throw a `TimeOutOfBounds` error if attempted before `unlockTime` has expired.  Emits the `TokenRedeemed` event when successful.</dd>
 
-<dt><code>supportsInterface(bytes4 interfaceId) returns (bool)</code></dt>
+<dt><code style="font-family: monospace; font-style: unset">supportsInterface(bytes4 interfaceId) returns (bool)</code></dt>
 <dd>See [ERC-165](https://eips.ethereum.org/EIPS/eip-165#how-a-contract-will-publish-the-interfaces-it-implements).</dd>
 
-<dt><code>vault() returns (IMarebitsVault)</code></dt>
+<dt><code style="font-family: monospace; font-style: unset">vault() returns (IMarebitsVault)</code></dt>
 <dd>Returns the address associated with the Mare Bits Vault contract.</dd>
 </dl>
 
 #### Events
 <dl>
-<dt><code>TokensLocked(uint256 indexed accountId, address indexed owner, uint256 amount, address tokenContract, uint256 tokenId, Token.Type tokenType, uint64 unlockTime)</code></dt>
+<dt><code style="font-family: monospace; font-style: unset">TokensLocked(uint256 indexed accountId, address indexed owner, uint256 amount, address tokenContract, uint256 tokenId, Token.Type tokenType, uint64 unlockTime)</code></dt>
 <dd>Emitted whenever a new locker is created or whenever the `unlockTime` for an existing locker has been extended.</dd>
 
-<dt><code>TokenRedeemed(uint256 indexed accountId, address indexed owner, uint256 amount, address tokenContract, uint256 tokenId, Token.Type tokenType)</code></dt>
+<dt><code style="font-family: monospace; font-style: unset">TokenRedeemed(uint256 indexed accountId, address indexed owner, uint256 amount, address tokenContract, uint256 tokenId, Token.Type tokenType)</code></dt>
 <dd>Emitted whenever a locker token is redeemed and the deposited tokens are returned to the `owner`.</dd>
 </dl>
 
