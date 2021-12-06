@@ -113,12 +113,14 @@ Interaction will primarily be with the Mare Bits Locker, Mare Bits Locker Accoun
 #### Data Types
 <dl>
 <dt><code>Token.Type</code></dt>
-<dd>Is an enumerated value represented internally as a <code>uint8</code> where:</dd>
-    - <code>0</code> means <code>UNDEFINED</code>
-    - <code>1</code> means <code>ERC-1155</code>
-    - <code>2</code> means <code>ERC-20</code>
-    - <code>3</code> means <code>ERC-721</code>
-
+<dd>Is an enumerated value represented internally as a <code>uint8</code> where:
+<ul>
+<li><code>0</code> means <code>UNDEFINED</code></li>
+<li><code>1</code> means <code>ERC-1155</code></li>
+<li><code>2</code> means <code>ERC-20</code></li>
+<li><code>3</code> means <code>ERC-721</code></li>
+</ul>
+</dd>
 <dt><code>Account.Info</code></dt>
 <dd>Is a data structure (or object) with the following members:
 <dl>
