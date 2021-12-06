@@ -22,10 +22,10 @@ Here are the deployed contract addresses:
   - Mare Bits Vault: [0x3d41144b7236fb2119c52546d6f5df15c0c316a8](https://polygonscan.com/address/0x3d41144b7236fb2119c52546d6f5df15c0c316a8 "View on Polygonscan")
 
 * Ropsten (test network):
-  - Mare Bits Locker: (TBD)
-  - Mare Bits Locker Account: (TBD)
-  - Mare Bits Locker Token: (TBD)
-  - Mare Bits Vault: (TBD)
+  - Mare Bits Locker: [0xe8fFc80a8D5c07Eb9Cd52AbF1a081b588d663414](https://ropsten.etherscan.io/address/0xe8fFc80a8D5c07Eb9Cd52AbF1a081b588d663414 "View on Etherscan")
+  - Mare Bits Locker Account: [0xfc0c341d8522f896e569bce3641a873ae8dbe506](https://ropsten.etherscan.io/address/0xfc0c341d8522f896e569bce3641a873ae8dbe506 "View on Etherscan")
+  - Mare Bits Locker Token: [0x78910d0a3b750462e82699a40afec7c10332ec5c](https://ropsten.etherscan.io/address/0x78910d0a3b750462e82699a40afec7c10332ec5c "View on Etherscan")
+  - Mare Bits Vault: [0x1ef0433cc1646451b038617b9963f2afa6428cc1 ](https://ropsten.etherscan.io/address/0x1ef0433cc1646451b038617b9963f2afa6428cc1 "View on Etherscan")
 
 ## Using the deployed contracts
 Interaction will primarily be with the Mare Bits Locker, Mare Bits Locker Account, and Mare Bits Locker Token contracts.  The Mare Bits Vault contract just holds deposits and doesn't offer much public functionality.
@@ -109,6 +109,8 @@ Interaction will primarily be with the Mare Bits Locker, Mare Bits Locker Accoun
 <dd>Thrown when a zero amount is passed.</dd>
 </dl>
 
+---
+
 ### Mare Bits Locker Account
 #### Data Types
 <dl>
@@ -165,6 +167,8 @@ Interaction will primarily be with the Mare Bits Locker, Mare Bits Locker Accoun
 <dt><code>NonexistentAccount(uint256 accountId)</code></dt>
 <dd>Thrown when the account <code>accountId</code> doesn't exist.</dd>
 </dl>
+
+---
 
 ### Mare Bits Locker Token
 This contract represents the ERC-721 token issued when tokens are locked.  As such, it extends all the functions and events from the [ERC-721 specification](https://eips.ethereum.org/EIPS/eip-721#specification).
@@ -246,6 +250,8 @@ This contract represents the ERC-721 token issued when tokens are locked.  As su
 <dt><code>NotLockerOwner(address claimedOwner, address actualOwner)</code></dt>
 <dd>Thrown when attempted to make a call that only the owner of this contract's owner can make.</dd>
 </dl>
+
+---
 
 ### Mare Bits Vault
 #### Functions

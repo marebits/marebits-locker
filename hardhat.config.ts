@@ -7,7 +7,7 @@ import "hardhat-deploy";
 import * as Secrets from "./secrets.json";
 
 const config: HardhatUserConfig = {
-	etherscan: { apiKey: Secrets.POLYGONSCAN_API_KEY }, 
+	etherscan: { apiKey: Secrets.ETHERSCAN_API_KEY }, 
 	namedAccounts: {
 		deployer: 0
 	}, 
