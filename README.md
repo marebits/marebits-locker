@@ -33,216 +33,233 @@ Interaction will primarily be with the Mare Bits Locker, Mare Bits Locker Accoun
 ### Mare Bits Locker
 #### Functions
 <dl>
-<dt><code style="font-family: monospace; font-style: unset">accounts() returns (IMarebitsLockerAccount)</code></dt>
+<dt><code>accounts() returns (IMarebitsLockerAccount)</code></dt>
 <dd>Returns the address associated with the Mare Bits Locker Account contract.</dd>
 
-<dt><code style="font-family: monospace; font-style: unset">bestPony() returns (string)</code></dt>
+<dt><code>bestPony() returns (string)</code></dt>
 <dd>Returns the best pony.</dd>
 
-<dt><code style="font-family: monospace; font-style: unset">extendLock(uint256 accountId, uint64 unlockTime) returns (uint256)</code></dt>
-<dd>Sets the lock time for account `accountId` to `unlockTime` (in seconds since UNIX epoch).  The new unlock time must be greater than the existing unlock time for the account (will throw `TimeOutOfBounds` if not).  Emits the `TokensLocked` event and returns the `accountId` when successful.</dd>
+<dt><code>extendLock(uint256 accountId, uint64 unlockTime) returns (uint256)</code></dt>
+<dd>Sets the lock time for account <code>accountId</code> to <code>unlockTime</code> (in seconds since UNIX epoch).  The new unlock time must be greater than the existing unlock time for the account (will throw <code>TimeOutOfBounds</code> if not).  Emits the <code>TokensLocked</code> event and returns the <code>accountId</code> when successful.</dd>
 
-<dt><code style="font-family: monospace; font-style: unset">getAccount(uint256 accountId) returns (Account.Info)</code></dt>
-<dd>Returns the account details for the account `accountId`.  These details include the `accountId`, the `amount` of tokens locked, the `tokenId` of the token locked, the `tokenContract` address, the `tokenType` locked, the `unlockTime`, whether or not the locker token `isBurned`, and whether or not the locker token `isRedeemed`.</dd>
+<dt><code>getAccount(uint256 accountId) returns (Account.Info)</code></dt>
+<dd>Returns the account details for the account <code>accountId</code>.  These details include the <code>accountId</code>, the <code>amount</code> of tokens locked, the <code>tokenId</code> of the token locked, the <code>tokenContract</code> address, the <code>tokenType</code> locked, the <code>unlockTime</code>, whether or not the locker token <code>isBurned</code>, and whether or not the locker token <code>isRedeemed</code>.</dd>
 
-<dt><code style="font-family: monospace; font-style: unset">lockerToken() returns (IMarebitsLockerToken)</code></dt>
+<dt><code>lockerToken() returns (IMarebitsLockerToken)</code></dt>
 <dd>Returns the address associated with the Mare Bits Locker Token contract.</dd>
 
-<dt><code style="font-family: monospace; font-style: unset">lockTokens(Token.Type tokenType, address tokenContract, uint256 tokenId, uint256 amount, uint64 unlockTime) returns (uint256)</code></dt>
-<dd>Locks `amount` tokens of the `tokenType` token deployed at the `tokenContract` address with the token ID `tokenId` for a period represented by `unlockTime` (in seconds since UNIX epoch).  The `tokenId` is ignored for ERC-20 tokens and the `amount` must be `1` for ERC-721 tokens.  Emits the `TokensLocked` event and returns the newly created `accountId` when successful.</dd>
+<dt><code>lockTokens(Token.Type tokenType, address tokenContract, uint256 tokenId, uint256 amount, uint64 unlockTime) returns (uint256)</code></dt>
+<dd>Locks <code>amount</code> tokens of the <code>tokenType</code> token deployed at the <code>tokenContract</code> address with the token ID <code>tokenId</code> for a period represented by <code>unlockTime</code> (in seconds since UNIX epoch).  The <code>tokenId</code> is ignored for ERC-20 tokens and the <code>amount</code> must be <code>1</code> for ERC-721 tokens.  Emits the <code>TokensLocked</code> event and returns the newly created <code>accountId</code> when successful.</dd>
 
-<dt><code style="font-family: monospace; font-style: unset">mareBitsToken() returns (IERC20)</code></dt>
+<dt><code>mareBitsToken() returns (IERC20)</code></dt>
 <dd>Returns the address associated with the Mare Bits token contract.  (This function is private in the Polygon contract.)</dd>
 
-<dt><code style="font-family: monospace; font-style: unset">redeemToken(uint256 accountId)</code></dt>
-<dd>Redeems the token for the account `accountId`, returning the locked tokens to the owner of `accountId`.  This will throw a `TimeOutOfBounds` error if attempted before `unlockTime` has expired.  Emits the `TokenRedeemed` event when successful.</dd>
+<dt><code>redeemToken(uint256 accountId)</code></dt>
+<dd>Redeems the token for the account <code>accountId</code>, returning the locked tokens to the owner of <code>accountId</code>.  This will throw a <code>TimeOutOfBounds</code> error if attempted before <code>unlockTime</code> has expired.  Emits the <code>TokenRedeemed</code> event when successful.</dd>
 
-<dt><code style="font-family: monospace; font-style: unset">supportsInterface(bytes4 interfaceId) returns (bool)</code></dt>
+<dt><code>supportsInterface(bytes4 interfaceId) returns (bool)</code></dt>
 <dd>See [ERC-165](https://eips.ethereum.org/EIPS/eip-165#how-a-contract-will-publish-the-interfaces-it-implements).</dd>
 
-<dt><code style="font-family: monospace; font-style: unset">vault() returns (IMarebitsVault)</code></dt>
+<dt><code>vault() returns (IMarebitsVault)</code></dt>
 <dd>Returns the address associated with the Mare Bits Vault contract.</dd>
 </dl>
 
 #### Events
 <dl>
-<dt><code style="font-family: monospace; font-style: unset">TokensLocked(uint256 indexed accountId, address indexed owner, uint256 amount, address tokenContract, uint256 tokenId, Token.Type tokenType, uint64 unlockTime)</code></dt>
-<dd>Emitted whenever a new locker is created or whenever the `unlockTime` for an existing locker has been extended.</dd>
+<dt><code>TokensLocked(uint256 indexed accountId, address indexed owner, uint256 amount, address tokenContract, uint256 tokenId, Token.Type tokenType, uint64 unlockTime)</code></dt>
+<dd>Emitted whenever a new locker is created or whenever the <code>unlockTime</code> for an existing locker has been extended.</dd>
 
-<dt><code style="font-family: monospace; font-style: unset">TokenRedeemed(uint256 indexed accountId, address indexed owner, uint256 amount, address tokenContract, uint256 tokenId, Token.Type tokenType)</code></dt>
-<dd>Emitted whenever a locker token is redeemed and the deposited tokens are returned to the `owner`.</dd>
+<dt><code>TokenRedeemed(uint256 indexed accountId, address indexed owner, uint256 amount, address tokenContract, uint256 tokenId, Token.Type tokenType)</code></dt>
+<dd>Emitted whenever a locker token is redeemed and the deposited tokens are returned to the <code>owner</code>.</dd>
 </dl>
 
 #### Errors
 <dl>
-`InsufficientBalance(uint256 required, uint256 available)`
-: Thrown when the required balance is less than the available balance.
+<dt><code>InsufficientBalance(uint256 required, uint256 available)</code></dt>
+<dd>Thrown when the required balance is less than the available balance.</dd>
 
-`InvalidAmount(string reason)`
-: Thrown when an invalid amount is entered.  The `reason` should contain the reason why the amount was invalid.
+<dt><code>InvalidAmount(string reason)</code></dt>
+<dd>Thrown when an invalid amount is entered.  The <code>reason</code> should contain the reason why the amount was invalid.</dd>
 
-`InvalidCaller()`
-: Thrown when called by an invalid caller (such as a contract instead of a real wallet).
+<dt><code>InvalidCaller()</code></dt>
+<dd>Thrown when called by an invalid caller (such as a contract instead of a real wallet).</dd>
 
-`InvalidTokenType(Token.Type tokenType)`
-: Thrown when the `tokenType` is not valid.  Must be 1 for ERC-1155, 2 for ERC-20, or 3 for ERC-721.
+<dt><code>InvalidTokenType(Token.Type tokenType)</code></dt>
+<dd>Thrown when the <code>tokenType</code> is not valid.  Must be 1 for ERC-1155, 2 for ERC-20, or 3 for ERC-721.</dd>
 
-`LockedAccount(uint64 expiresAt, uint64 currentTime)`
-: Thrown when attempting to call `redeemToken` for an account that is still locked.  `expiresAt` is the time when the lock expires (in seconds since UNIX epoch) and `currentTime` is the current block time stamp (in seconds since UNIX epoch).
+<dt><code>LockedAccount(uint64 expiresAt, uint64 currentTime)</code></dt>
+<dd>Thrown when attempting to call <code>redeemToken</code> for an account that is still locked.  <code>expiresAt</code> is the time when the lock expires (in seconds since UNIX epoch) and <code>currentTime</code> is the current block time stamp (in seconds since UNIX epoch).</dd>
 
-`NeedsMoreMARE(address wallet)`
-: Thrown when someone attempts to interact with this contract who does not hodl $MARE.  You must have a balance greater than 0.
+<dt><code>NeedsMoreMARE(address wallet)</code></dt>
+<dd>Thrown when someone attempts to interact with this contract who does not hodl $MARE.  You must have a balance greater than 0.</dd>
 
-`NonexistentAccount(uint256 accountId)`
-: Thrown when the account `accountId` doesn't exist.
+<dt><code>NonexistentAccount(uint256 accountId)</code></dt>
+<dd>Thrown when the account <code>accountId</code> doesn't exist.</dd>
 
-`NotTokenOwner(uint256 tokenId, address claimedOwner, address actualOwner)`
-: Thrown when attempting to lock the token `tokenId` by `claimedOwner` when the actual owner is `actualOwner`.
+<dt><code>NotTokenOwner(uint256 tokenId, address claimedOwner, address actualOwner)</code></dt>
+<dd>Thrown when attempting to lock the token <code>tokenId</code> by <code>claimedOwner</code> when the actual owner is <code>actualOwner</code>.</dd>
 
-`TimeOutOfBounds(uint64 given, uint64 minimum, uint64 maximum)`
-: Thrown when the `given` time does not fall within the range specified by `minimum` and `maximum`.
+<dt><code>TimeOutOfBounds(uint64 given, uint64 minimum, uint64 maximum)</code></dt>
+<dd>Thrown when the <code>given</code> time does not fall within the range specified by <code>minimum</code> and <code>maximum</code>.</dd>
 
-`UnapprovedTokenTransfer(address tokenAddress, string approvalFunction)`
-: Thrown when attempting to transfer tokens for token contract `tokenAddress`.  The `approvalFunction` tells you what function needs to be run on the `tokenAddress` contract to approve the transfer.
+<dt><code>UnapprovedTokenTransfer(address tokenAddress, string approvalFunction)</code></dt>
+<dd>Thrown when attempting to transfer tokens for token contract <code>tokenAddress</code>.  The <code>approvalFunction</code> tells you what function needs to be run on the <code>tokenAddress</code> contract to approve the transfer.</dd>
 
-`ZeroAmountGiven()`
-: Thrown when a zero amount is passed.
+<dt><code>ZeroAmountGiven()</code></dt>
+<dd>Thrown when a zero amount is passed.</dd>
 </dl>
 
 ### Mare Bits Locker Account
 #### Data Types
-`Token.Type`
-: Is an enumerated value represented internally as a `uint8` where:
-    - `0` means `UNDEFINED`
-    - `1` means `ERC-1155`
-    - `2` means `ERC-20`
-    - `3` means `ERC-721`
+<dl>
+<dt><code>Token.Type</code></dt>
+<dd>Is an enumerated value represented internally as a <code>uint8</code> where:</dd>
+    - <code>0</code> means <code>UNDEFINED</code>
+    - <code>1</code> means <code>ERC-1155</code>
+    - <code>2</code> means <code>ERC-20</code>
+    - <code>3</code> means <code>ERC-721</code>
 
-`Account.Info`
-: Is a data structure (or object) with the following members:
-    `uint256 accountId`
-    : The account ID
+<dt><code>Account.Info</code></dt>
+<dd>Is a data structure (or object) with the following members:
+<dl>
+<dt><code>uint256 accountId</code></dt>
+<dd>The account ID</dd>
 
-    `uint256 amount`
-    : The amount of tokens locked in the account
+<dt><code>uint256 amount</code></dt>
+<dd>The amount of tokens locked in the account</dd>
 
-    `uint256 tokenId`
-    : The token ID for the tokens locked in the account (only meaningful for ERC-1155 and ERC-721 tokens, will be 0 for ERC-20 tokens)
+<dt><code>uint256 tokenId</code></dt>
+<dd>The token ID for the tokens locked in the account (only meaningful for ERC-1155 and ERC-721 tokens, will be 0 for ERC-20 tokens)</dd>
 
-    `address tokenContract`
-    : The address of the token contract for the locked tokens
+<dt><code>address tokenContract</code></dt>
+<dd>The address of the token contract for the locked tokens</dd>
 
-    `uint64 unlockTime`
-    : The time after which the account token can be redeemed to withdraw the locked token balance (in seconds since UNIX epoch)
+<dt><code>uint64 unlockTime</code></dt>
+<dd>The time after which the account token can be redeemed to withdraw the locked token balance (in seconds since UNIX epoch)</dd>
 
-    `bool isBurned`
-    : True when the account token has been burned; otherwise, false
+<dt><code>bool isBurned</code></dt>
+<dd>True when the account token has been burned; otherwise, false</dd>
 
-    `bool isRedeemed`
-    : True when the tokens locked by the account have been redeemed; otherwise, false
+<dt><code>bool isRedeemed</code></dt>
+<dd>True when the tokens locked by the account have been redeemed; otherwise, false</dd>
+</dl>
+</dd>
+</dl>
 
 #### Functions
-`bestPony() returns (string)`
-: Returns the best pony.
+<dl>
+<dt><code>bestPony() returns (string)</code></dt>
+<dd>Returns the best pony.</dd>
 
-`getAccount(uint256 accountId) returns (Account.Info)`
-: Returns the account details for the account `accountId`.  These details include the `accountId`, the `amount` of tokens locked, the `tokenId` of the token locked, the `tokenContract` address, the `tokenType` locked, the `unlockTime`, whether or not the locker token `isBurned`, and whether or not the locker token `isRedeemed`.
+<dt><code>getAccount(uint256 accountId) returns (Account.Info)</code></dt>
+<dd>Returns the account details for the account <code>accountId</code>.  These details include the <code>accountId</code>, the <code>amount</code> of tokens locked, the <code>tokenId</code> of the token locked, the <code>tokenContract</code> address, the <code>tokenType</code> locked, the <code>unlockTime</code>, whether or not the locker token <code>isBurned</code>, and whether or not the locker token <code>isRedeemed</code>.</dd>
 
-`supportsInterface(bytes4 interfaceId) returns (bool)`
-: See [ERC-165](https://eips.ethereum.org/EIPS/eip-165#how-a-contract-will-publish-the-interfaces-it-implements).
+<dt><code>supportsInterface(bytes4 interfaceId) returns (bool)</code></dt>
+<dd>See [ERC-165](https://eips.ethereum.org/EIPS/eip-165#how-a-contract-will-publish-the-interfaces-it-implements).</dd>
+</dl>
 
 #### Errors
-`NonexistentAccount(uint256 accountId)`
-: Thrown when the account `accountId` doesn't exist.
+<dl>
+<dt><code>NonexistentAccount(uint256 accountId)</code></dt>
+<dd>Thrown when the account <code>accountId</code> doesn't exist.</dd>
+</dl>
 
 ### Mare Bits Locker Token
 This contract represents the ERC-721 token issued when tokens are locked.  As such, it extends all the functions and events from the [ERC-721 specification](https://eips.ethereum.org/EIPS/eip-721#specification).
 
 #### Functions
-`approve(address to, uint256 tokenId)`
-: Gives permission to `to` to transfer token `tokenId` to another account.  The approval is cleared when the token is transferred.  Only a single account can be approved at a time, so approving the [zero address](https://etherscan.io/address/0x0000000000000000000000000000000000000000) clears previous approvals.  Emits an `Approval` event when successful.
+<dl>
+<dt><code>approve(address to, uint256 tokenId)</code></dt>
+<dd>Gives permission to <code>to</code> to transfer token <code>tokenId</code> to another account.  The approval is cleared when the token is transferred.  Only a single account can be approved at a time, so approving the [zero address](https://etherscan.io/address/0x0000000000000000000000000000000000000000) clears previous approvals.  Emits an <code>Approval</code> event when successful.</dd>
 
-`balanceOf(address owner) returns (uint256)`
-: Returns the number of Mare Bits Locker tokens held by address `owner`.
+<dt><code>balanceOf(address owner) returns (uint256)</code></dt>
+<dd>Returns the number of Mare Bits Locker tokens held by address <code>owner</code>.</dd>
 
-`bestPony() returns (string)`
-: Returns the best pony.
+<dt><code>bestPony() returns (string)</code></dt>
+<dd>Returns the best pony.</dd>
 
-`burn(uint256 tokenId)`
-: Can only be called by the owner of the token `tokenId` or someone the owner has approved.  This will burn the locker token, in effect sending it to the [zero address](https://etherscan.io/address/0x0000000000000000000000000000000000000000).  If this is called, the token will disappear and any tokens locked in the locker will be unredeemable!  Emits a `Transfer` event when successful.
+<dt><code>burn(uint256 tokenId)</code></dt>
+<dd>Can only be called by the owner of the token <code>tokenId</code> or someone the owner has approved.  This will burn the locker token, in effect sending it to the [zero address](https://etherscan.io/address/0x0000000000000000000000000000000000000000).  If this is called, the token will disappear and any tokens locked in the locker will be unredeemable!  Emits a <code>Transfer</code> event when successful.</dd>
 
-`getApproved(uint256 tokenId) returns (address)`
-: Returns the account approved to transfer token `tokenId`.
+<dt><code>getApproved(uint256 tokenId) returns (address)</code></dt>
+<dd>Returns the account approved to transfer token <code>tokenId</code>.</dd>
 
-`isApprovedForAll(address owner, address operator) returns (bool)`
-: Returns true if the `operator` is allowed to manage all of the assets of `owner`.
+<dt><code>isApprovedForAll(address owner, address operator) returns (bool)</code></dt>
+<dd>Returns true if the <code>operator</code> is allowed to manage all of the assets of <code>owner</code>.</dd>
 
-`name() returns (string)`
-: Returns the general name of this token (Mare Bits Locker Token).
+<dt><code>name() returns (string)</code></dt>
+<dd>Returns the general name of this token (Mare Bits Locker Token).</dd>
 
-`ownerOf(uint256 tokenId) returns (address)`
-: Returns the address that owns the token `tokenId`.
+<dt><code>ownerOf(uint256 tokenId) returns (address)</code></dt>
+<dd>Returns the address that owns the token <code>tokenId</code>.</dd>
 
-`safeTransferFrom(address from, address to, uint256 tokenId)`
-: Safely transfers token `tokenId` from `from` to `to`, checking first that contract recipients are aware of the ERC-721 protocol to prevent tokens from being forever locked.  Emits a `Transfer` event when successful.
+<dt><code>safeTransferFrom(address from, address to, uint256 tokenId)</code></dt>
+<dd>Safely transfers token <code>tokenId</code> from <code>from</code> to <code>to</code>, checking first that contract recipients are aware of the ERC-721 protocol to prevent tokens from being forever locked.  Emits a <code>Transfer</code> event when successful.</dd>
 
-`setApprovalForAll(address operator, bool _approved)`
-: Approve or remove `operator` as an operator for the caller.  Operators can call `transferFrom` or `safeTransferFrom` for any token owned by the caller.  Emits an `ApprovalForAll` event when successful.
+<dt><code>setApprovalForAll(address operator, bool _approved)</code></dt>
+<dd>Approve or remove <code>operator</code> as an operator for the caller.  Operators can call <code>transferFrom</code> or <code>safeTransferFrom</code> for any token owned by the caller.  Emits an <code>ApprovalForAll</code> event when successful.</dd>
 
-`supportsInterface(bytes4 interfaceId) returns (bool)`
-: See [ERC-165](https://eips.ethereum.org/EIPS/eip-165#how-a-contract-will-publish-the-interfaces-it-implements).
+<dt><code>supportsInterface(bytes4 interfaceId) returns (bool)</code></dt>
+<dd>See [ERC-165](https://eips.ethereum.org/EIPS/eip-165#how-a-contract-will-publish-the-interfaces-it-implements).</dd>
 
-`symbol() returns (string)`
-: Returns the general symbol of this token (🐎‍♀️🔒🪙).
+<dt><code>symbol() returns (string)</code></dt>
+<dd>Returns the general symbol of this token (🐎‍♀️🔒🪙).</dd>
 
-`tokenByIndex(uint256 index) returns (uint256)`
-: REturns a token ID at a given `index` of all Mare Bit Locker Tokens.  Use along with `totalSupply` to enumerate all tokens.
+<dt><code>tokenByIndex(uint256 index) returns (uint256)</code></dt>
+<dd>REturns a token ID at a given <code>index</code> of all Mare Bit Locker Tokens.  Use along with <code>totalSupply</code> to enumerate all tokens.</dd>
 
-`tokenOfOwnerByIndex(address owner, uint256 index) returns (uint256)`
-: Returns a token ID owned by `owner` at a given `index` of its token list.  Use along with `balanceOf` to enumerate all of `owner`'s tokens.
+<dt><code>tokenOfOwnerByIndex(address owner, uint256 index) returns (uint256)</code></dt>
+<dd>Returns a token ID owned by <code>owner</code> at a given <code>index</code> of its token list.  Use along with <code>balanceOf</code> to enumerate all of <code>owner</code>'s tokens.</dd>
 
-`tokenURI(uint256 tokenId)`
-: Returns the URI containing metadata for the token `tokenId`.  This is used by sites to display metadata for this NFT.
+<dt><code>tokenURI(uint256 tokenId)</code></dt>
+<dd>Returns the URI containing metadata for the token <code>tokenId</code>.  This is used by sites to display metadata for this NFT.</dd>
 
-`totalSupply() returns (uint256)`
-: Returns the total amount of Mare Bit Locker Tokens.
+<dt><code>totalSupply() returns (uint256)</code></dt>
+<dd>Returns the total amount of Mare Bit Locker Tokens.</dd>
 
-`transferFrom(address from, address to, uint256 tokenId)`
-: Transfers token `tokenId` from `from` to `to`.  Emits a `Transfer` event when successful.
+<dt><code>transferFrom(address from, address to, uint256 tokenId)</code></dt>
+<dd>Transfers token <code>tokenId</code> from <code>from</code> to <code>to</code>.  Emits a <code>Transfer</code> event when successful.</dd>
+</dl>
 
 #### Events
-`Approval(address owner, address approved, uint256 tokenId)`
-: Emitted when `owner` enabled `approved` to manager the token `tokenId`.
+<dl>
+<dt><code>Approval(address owner, address approved, uint256 tokenId)</code></dt>
+<dd>Emitted when <code>owner</code> enabled <code>approved</code> to manager the token <code>tokenId</code>.</dd>
 
-`ApprovalForAll(address owner, address operator, bool approved)`
-: Emitted when `owner` enables or disables (`approved`) `operator` to manager all of its assets.
+<dt><code>ApprovalForAll(address owner, address operator, bool approved)</code></dt>
+<dd>Emitted when <code>owner</code> enables or disables (<code>approved</code>) <code>operator</code> to manager all of its assets.</dd>
 
-`Transfer(address from, address to, uint256 tokenId)`
-: Emitted when token `tokenId` is transferred from `from` to `to`.
+<dt><code>Transfer(address from, address to, uint256 tokenId)</code></dt>
+<dd>Emitted when token <code>tokenId</code> is transferred from <code>from</code> to <code>to</code>.</dd>
 
-`URI(string value, uint256 indexed id)`
-: Emitted when the URI of the token `id` has changed to `value`.
+<dt><code>URI(string value, uint256 indexed id)</code></dt>
+<dd>Emitted when the URI of the token <code>id</code> has changed to <code>value</code>.</dd>
+</dl>
 
 #### Errors
-`NotApprovedOrOwner(uint256 tokenId)`
-: Thrown when attempted to transfer a token the caller does not own or is not approved to transfer.
+<dl>
+<dt><code>NotApprovedOrOwner(uint256 tokenId)</code></dt>
+<dd>Thrown when attempted to transfer a token the caller does not own or is not approved to transfer.</dd>
 
-`NotLockerOwner(address claimedOwner, address actualOwner)`
-: Thrown when attempted to make a call that only the owner of this contract's owner can make.
+<dt><code>NotLockerOwner(address claimedOwner, address actualOwner)</code></dt>
+<dd>Thrown when attempted to make a call that only the owner of this contract's owner can make.</dd>
+</dl>
 
 ### Mare Bits Vault
 #### Functions
-`bestPony() returns (string)`
-: Returns the best pony.
+<dl>
+<dt><code>bestPony() returns (string)</code></dt>
+<dd>Returns the best pony.</dd>
 
-`onERC1155BatchReceived(address operator, address from, uint256[] ids, uint256[] values, bytes data) returns (bytes4)`
-: Handles the receipt of multiple ERC-1155 token types.  This function is called at the end of a `safeBatchTransferFrom` after the balances have been updated.  It returns its Solidity selector to confirm the token transfers.
+<dt><code>onERC1155BatchReceived(address operator, address from, uint256[] ids, uint256[] values, bytes data) returns (bytes4)</code></dt>
+<dd>Handles the receipt of multiple ERC-1155 token types.  This function is called at the end of a <code>safeBatchTransferFrom</code> after the balances have been updated.  It returns its Solidity selector to confirm the token transfers.</dd>
 
-`onERC1155Received(address operator, address from, uint256 id, uint256 value, bytes data) returns (bytes4)`
-: Handles the receipt of a single ERC-1155 token type.  This function is called at the end of a `safeTransferFrom` after the balance has been updated.  It returns its Solidity selector to confirm the token transfer.
+<dt><code>onERC1155Received(address operator, address from, uint256 id, uint256 value, bytes data) returns (bytes4)</code></dt>
+<dd>Handles the receipt of a single ERC-1155 token type.  This function is called at the end of a <code>safeTransferFrom</code> after the balance has been updated.  It returns its Solidity selector to confirm the token transfer.</dd>
 
-`onERC721Received(address operator, address from, uint256 tokenId, bytes data) returns (bytes4)`
-: Whenever an ERC-721 `tokenId` is transferred to this contract via `safeTransferFrom` by `operator` from `from`, this function is called.  It returns its Solidity selector to confirm the token transfer.
+<dt><code>onERC721Received(address operator, address from, uint256 tokenId, bytes data) returns (bytes4)</code></dt>
+<dd>Whenever an ERC-721 <code>tokenId</code> is transferred to this contract via <code>safeTransferFrom</code> by <code>operator</code> from <code>from</code>, this function is called.  It returns its Solidity selector to confirm the token transfer.</dd>
 
-`supportsInterface(bytes4 interfaceId) returns (bool)`
-: See [ERC-165](https://eips.ethereum.org/EIPS/eip-165#how-a-contract-will-publish-the-interfaces-it-implements).
+<dt><code>supportsInterface(bytes4 interfaceId) returns (bool)</code></dt>
+<dd>See [ERC-165](https://eips.ethereum.org/EIPS/eip-165#how-a-contract-will-publish-the-interfaces-it-implements).</dd>
+</dl>
