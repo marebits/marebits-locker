@@ -32,44 +32,49 @@ Interaction will primarily be with the Mare Bits Locker, Mare Bits Locker Accoun
 
 ### Mare Bits Locker
 #### Functions
-`accounts() returns (IMarebitsLockerAccount)`
-: Returns the address associated with the Mare Bits Locker Account contract.
+<dl>
+<dt>`accounts() returns (IMarebitsLockerAccount)`</dt>
+<dd>Returns the address associated with the Mare Bits Locker Account contract.</dd>
 
-`bestPony() returns (string)`
-: Returns the best pony.
+<dt>`bestPony() returns (string)`</dt>
+<dd>Returns the best pony.</dd>
 
-`extendLock(uint256 accountId, uint64 unlockTime) returns (uint256)`
-: Sets the lock time for account `accountId` to `unlockTime` (in seconds since UNIX epoch).  The new unlock time must be greater than the existing unlock time for the account (will throw `TimeOutOfBounds` if not).  Emits the `TokensLocked` event and returns the `accountId` when successful.
+<dt>`extendLock(uint256 accountId, uint64 unlockTime) returns (uint256)`</dt>
+<dd>Sets the lock time for account `accountId` to `unlockTime` (in seconds since UNIX epoch).  The new unlock time must be greater than the existing unlock time for the account (will throw `TimeOutOfBounds` if not).  Emits the `TokensLocked` event and returns the `accountId` when successful.</dd>
 
-`getAccount(uint256 accountId) returns (Account.Info)`
-: Returns the account details for the account `accountId`.  These details include the `accountId`, the `amount` of tokens locked, the `tokenId` of the token locked, the `tokenContract` address, the `tokenType` locked, the `unlockTime`, whether or not the locker token `isBurned`, and whether or not the locker token `isRedeemed`.
+<dt>`getAccount(uint256 accountId) returns (Account.Info)`</dt>
+<dd>Returns the account details for the account `accountId`.  These details include the `accountId`, the `amount` of tokens locked, the `tokenId` of the token locked, the `tokenContract` address, the `tokenType` locked, the `unlockTime`, whether or not the locker token `isBurned`, and whether or not the locker token `isRedeemed`.</dd>
 
-`lockerToken() returns (IMarebitsLockerToken)`
-: Returns the address associated with the Mare Bits Locker Token contract.
+<dt>`lockerToken() returns (IMarebitsLockerToken)`</dt>
+<dd>Returns the address associated with the Mare Bits Locker Token contract.</dd>
 
-`lockTokens(Token.Type tokenType, address tokenContract, uint256 tokenId, uint256 amount, uint64 unlockTime) returns (uint256)`
-: Locks `amount` tokens of the `tokenType` token deployed at the `tokenContract` address with the token ID `tokenId` for a period represented by `unlockTime` (in seconds since UNIX epoch).  The `tokenId` is ignored for ERC-20 tokens and the `amount` must be `1` for ERC-721 tokens.  Emits the `TokensLocked` event and returns the newly created `accountId` when successful.
+<dt>`lockTokens(Token.Type tokenType, address tokenContract, uint256 tokenId, uint256 amount, uint64 unlockTime) returns (uint256)`</dt>
+<dd>Locks `amount` tokens of the `tokenType` token deployed at the `tokenContract` address with the token ID `tokenId` for a period represented by `unlockTime` (in seconds since UNIX epoch).  The `tokenId` is ignored for ERC-20 tokens and the `amount` must be `1` for ERC-721 tokens.  Emits the `TokensLocked` event and returns the newly created `accountId` when successful.</dd>
 
-`mareBitsToken() returns (IERC20)`
-: Returns the address associated with the Mare Bits token contract.  (This function is private in the Polygon contract.)
+<dt>`mareBitsToken() returns (IERC20)`</dt>
+<dd>Returns the address associated with the Mare Bits token contract.  (This function is private in the Polygon contract.)</dd>
 
-`redeemToken(uint256 accountId)`
-: Redeems the token for the account `accountId`, returning the locked tokens to the owner of `accountId`.  This will throw a `TimeOutOfBounds` error if attempted before `unlockTime` has expired.  Emits the `TokenRedeemed` event when successful.
+<dt>`redeemToken(uint256 accountId)`</dt>
+<dd>Redeems the token for the account `accountId`, returning the locked tokens to the owner of `accountId`.  This will throw a `TimeOutOfBounds` error if attempted before `unlockTime` has expired.  Emits the `TokenRedeemed` event when successful.</dd>
 
-`supportsInterface(bytes4 interfaceId) returns (bool)`
-: See [ERC-165](https://eips.ethereum.org/EIPS/eip-165#how-a-contract-will-publish-the-interfaces-it-implements).
+<dt>`supportsInterface(bytes4 interfaceId) returns (bool)`</dt>
+<dd>See [ERC-165](https://eips.ethereum.org/EIPS/eip-165#how-a-contract-will-publish-the-interfaces-it-implements).</dd>
 
-`vault() returns (IMarebitsVault)`
-: Returns the address associated with the Mare Bits Vault contract.
+<dt>`vault() returns (IMarebitsVault)`</dt>
+<dd>Returns the address associated with the Mare Bits Vault contract.</dd>
+</dl>
 
 #### Events
-`TokensLocked(uint256 indexed accountId, address indexed owner, uint256 amount, address tokenContract, uint256 tokenId, Token.Type tokenType, uint64 unlockTime)`
-: Emitted whenever a new locker is created or whenever the `unlockTime` for an existing locker has been extended.
+<dl>
+<dt>`TokensLocked(uint256 indexed accountId, address indexed owner, uint256 amount, address tokenContract, uint256 tokenId, Token.Type tokenType, uint64 unlockTime)`</dt>
+<dd>Emitted whenever a new locker is created or whenever the `unlockTime` for an existing locker has been extended.</dd>
 
-`TokenRedeemed(uint256 indexed accountId, address indexed owner, uint256 amount, address tokenContract, uint256 tokenId, Token.Type tokenType)`
-: Emitted whenever a locker token is redeemed and the deposited tokens are returned to the `owner`.
+<dt>`TokenRedeemed(uint256 indexed accountId, address indexed owner, uint256 amount, address tokenContract, uint256 tokenId, Token.Type tokenType)`</dt>
+<dd>Emitted whenever a locker token is redeemed and the deposited tokens are returned to the `owner`.</dd>
+</dl>
 
 #### Errors
+<dl>
 `InsufficientBalance(uint256 required, uint256 available)`
 : Thrown when the required balance is less than the available balance.
 
@@ -102,6 +107,7 @@ Interaction will primarily be with the Mare Bits Locker, Mare Bits Locker Accoun
 
 `ZeroAmountGiven()`
 : Thrown when a zero amount is passed.
+</dl>
 
 ### Mare Bits Locker Account
 #### Data Types
