@@ -1,3 +1,4 @@
+[![MythXBadge](https://badgen.net/https/api.mythx.io/v1/projects/9d427d39-aa1f-4fda-8a48-1f3cf0b1bb61/badge/data?cache=300&icon=https://raw.githubusercontent.com/ConsenSys/mythx-github-badge/main/logo_white.svg)](https://docs.mythx.io/dashboard/github-badges)
 # Mare Bits Locker
 
 [Mare Bits Locker](https://locker.mare.biz/) is a way to lock-up your [ERC20](https://eips.ethereum.org/EIPS/eip-20), [ERC721](https://eips.ethereum.org/EIPS/eip-721), or [ERC1155](https://eips.ethereum.org/EIPS/eip-1155) tokens and keep them safe from that waifu thief Brad.  The contract issues a non-fungible token (NFT) that represents your deposit and allows whoever owns that token after a pre-determined length of time to withdraw the locked funds.  Once locked, ***your tokens cannot be withdrawn until the lock period has expired*** no matter what.  So, be careful!

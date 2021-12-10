@@ -14,7 +14,7 @@ const deployMarebitsLocker: DeployFunction = async function({ deployments, getCh
 	// await frame.request({ method: "eth_sendTransaction", params: [tx] });
 	const chainId: string = await getChainId();
 	const deployer: string = (await getNamedAccounts()).deployer;
-	const baseURI: string = `ipns://locker.mare.biz/token/${chainId}/`;
+	const baseURI: string = `https://locker.mare.biz/token/${chainId}/`;
 	const name: string = "Mare Bits Locker Token";
 	const symbol: string = "\uD83D\uDC0E\u200D\u2640\uFE0F\uD83D\uDD12\uD83E\uDE99";
 	const mareBitsToken: string = ((): string => {
